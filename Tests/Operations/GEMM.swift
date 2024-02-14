@@ -174,6 +174,9 @@ struct MFA_GEMM: GEMM, MFA_Operation {
     tensors: GEMM_Tensors,
     resource: AsyncPipeline
   ) {
+    print("tgml: ", resource.threadgroupMemoryLengths[0])
+    print("gridsize: ", resource.gridSizes[0])
+    print("groupsize: ", resource.groupSizes[0])
     encoder.setComputePipelineState(resource.resource(index: 0))
     encoder.setThreadgroupMemoryLength(
       Int(resource.threadgroupMemoryLengths[0]), index: 0)
@@ -243,6 +246,7 @@ struct MFA_GEMM: GEMM, MFA_Operation {
         
         let bufferLength = buffer.count * MemoryLayout<SIMD4<UInt64>>.stride
         assert(MemoryLayout<SIMD4<UInt64>>.stride == 8 * 4)
+        print("buffer", buffer[0], bufferLength)
         encoder.setBytes(buffer.baseAddress!, length: bufferLength, index: 10)
       }
     } else {
@@ -257,8 +261,11 @@ struct MFA_GEMM: GEMM, MFA_Operation {
     
     var gridSize = resource.gridSizes[0]
     gridSize.depth = gridZ
+    print("gridSize", gridSize)
+    let groupSize = resource.groupSizes[0]
+    print("groupSize", groupSize)
     encoder.dispatchThreadgroups(
-      gridSize, threadsPerThreadgroup: resource.groupSizes[0])
+      gridSize, threadsPerThreadgroup: groupSize)
   }
 }
 

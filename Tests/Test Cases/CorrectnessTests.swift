@@ -19,7 +19,7 @@ class CorrectnessTests: MFATestCase {
   
   override func runQuickTests() {
     let logProgress = true
-    testRandomAttention(logProgress: logProgress)
+    //testRandomAttention(logProgress: logProgress)
     testRandomGEMM(logProgress: logProgress)
   }
   

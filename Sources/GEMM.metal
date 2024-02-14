@@ -9,6 +9,7 @@
 #include "metal_data_type"
 #include "metal_simdgroup_event"
 #include "metal_simdgroup_matrix_storage"
+
 using namespace metal;
 
 // MARK: - Function Constants
@@ -70,6 +71,15 @@ constant ushort B_sram_offset = A_sram_offset + A_sram_length;
 constant ushort C_sram_offset = B_sram_offset + B_sram_length;
 constant ushort A_block_offset = 0;
 constant ushort B_block_offset = A_block_offset + A_block_length;
+
+constant uint thread_count = 32 * M_splits * N_splits;
+#if thread_count > INT_MAX
+typedef uint3 idx_t3;
+#elseif thread_count > USHRT_MAX
+typedef int3 idx_t3;
+#else
+typedef ushort3 idx_t3;
+#endif
 
 // MARK: - Utilities
 
@@ -260,7 +270,7 @@ void _gemm_impl(device T *A [[buffer(0)]],
                 typename activation_functor<T>::function_table table [[buffer(11), function_constant(use_activation_function)]],
                 constant uint *activation_function_offsets [[buffer(12), function_constant(batched_activation_function)]],
                 
-                uint3 gid [[threadgroup_position_in_grid]],
+                idx_t3 gid [[threadgroup_position_in_grid]],
                 ushort sidx [[simdgroup_index_in_threadgroup]],
                 ushort lane_id [[thread_index_in_simdgroup]])
 {
@@ -474,7 +484,7 @@ kernel void hgemm(device half *A [[buffer(0)]],
                   typename activation_functor<half>::function_table table [[buffer(11), function_constant(use_activation_function)]],
                   constant uint *activation_function_offsets [[buffer(12), function_constant(batched_activation_function)]],
                   
-                  uint3 gid [[threadgroup_position_in_grid]],
+                  idx_t3 gid [[threadgroup_position_in_grid]],
                   ushort sidx [[simdgroup_index_in_threadgroup]],
                   ushort lane_id [[thread_index_in_simdgroup]])
 {
@@ -491,28 +501,27 @@ kernel void sgemm(device float *A [[buffer(0)]],
                   typename activation_functor<float>::function_table table [[buffer(11), function_constant(use_activation_function)]],
                   constant uint *activation_function_offsets [[buffer(12), function_constant(batched_activation_function)]],
                   
-                  uint3 gid [[threadgroup_position_in_grid]],
+                  idx_t3 gid [[threadgroup_position_in_grid]],
                   ushort sidx [[simdgroup_index_in_threadgroup]],
                   ushort lane_id [[thread_index_in_simdgroup]])
 {
   _gemm_impl<float>(A, B, C, D, threadgroup_block, matrix_offsets, table, activation_function_offsets, gid, sidx, lane_id);
 }
 
-#if __METAL_VERSION__ >= 310
-kernel void bgemm(device bfloat *A [[buffer(0)]],
-  device bfloat *B [[buffer(1)]],
-  device bfloat *C [[buffer(2)]],
-  device void *D [[buffer(3), function_constant(use_activation)]],
-
-  threadgroup bfloat *threadgroup_block [[threadgroup(0)]],
-  constant ulong4 *matrix_offsets [[buffer(10), function_constant(batched)]],
-  typename activation_functor<bfloat>::function_table table [[buffer(11), function_constant(use_activation_function)]],
-  constant uint *activation_function_offsets [[buffer(12), function_constant(batched_activation_function)]],
-
-  uint3 gid [[threadgroup_position_in_grid]],
-  ushort sidx [[simdgroup_index_in_threadgroup]],
-  ushort lane_id [[thread_index_in_simdgroup]])
+kernel void bgemm(device ushort *A [[buffer(0)]],
+                  device ushort *B [[buffer(1)]],
+                  device ushort *C [[buffer(2)]],
+                  device void *D [[buffer(3), function_constant(use_activation)]],
+                  
+                  threadgroup ushort *threadgroup_block [[threadgroup(0)]],
+                  constant ulong4 *matrix_offsets [[buffer(10), function_constant(batched)]],
+                  typename activation_functor<ushort>::function_table table [[buffer(11), function_constant(use_activation_function)]],
+                  constant uint *activation_function_offsets [[buffer(12), function_constant(batched_activation_function)]],
+                  
+                  idx_t3 gid [[threadgroup_position_in_grid]],
+                  ushort sidx [[simdgroup_index_in_threadgroup]],
+                  ushort lane_id [[thread_index_in_simdgroup]])
 {
-  _gemm_impl<bfloat>(A, B, C, D, threadgroup_block, matrix_offsets, table, activation_function_offsets, gid, sidx, lane_id);
+    using bf16 = ushort;
+    _gemm_impl<bf16>(A, B, C, D, threadgroup_block, matrix_offsets, table, activation_function_offsets, gid, sidx, lane_id);
 }
-#endif

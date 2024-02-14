@@ -3,8 +3,10 @@
 // Copyright (c) 2023 Philip Turner. See MIT LICENSE
 //===----------------------------------------------------------------------===//
 
+
 #ifndef __METAL_SIMDGROUP_MATRIX_STORAGE
 #define __METAL_SIMDGROUP_MATRIX_STORAGE
+
 
 // Contains C++ symbols accessible to a developer through automatic code
 // completion in Xcode 14.2. Formatted with the same style as the Metal Standard
@@ -14,9 +16,11 @@
 #pragma METAL internals : enable
 namespace metal
 {
-  template <typename T>
+
+  template <typename T, typename M = float>
   struct simdgroup_matrix_storage {
     typedef vec<T, 64> storage_type;
+    typedef vec<M, 64> multiply_type;
     
     storage_type t;
     
@@ -140,6 +144,55 @@ namespace metal
       t = __metal_simdgroup_matrix_8x8_multiply_accumulate(a.t, b.t, t, typename simdgroup_matrix_storage<T>::storage_type());
     }
     
+    constexpr METAL_FUNC ushort float_to_bfloat_bits(float x) {
+      // Check for nan
+      if ((as_type<uint>(x) & ~_fp_encoding_traits<float>::sign_mask) > _fp_encoding_traits<float>::inf_mask) {
+        return ushort(as_type<uint>(0x7FC0));
+      }
+      // Take bits
+      uint float_bits = as_type<uint>(x);
+
+      // Round to nearest even
+      float_bits += ((float_bits >> 16) & 1) + as_type<uint>(0x7FFF);
+
+      // Take upper 16 bits
+      return float_bits >> 16;
+    }
+    
+    constexpr METAL_FUNC float bfloat_bits_to_float(ushort x) {
+      return as_type<float>((uint)x << 16);
+    }
+    
+    constexpr METAL_FUNC vec<ushort, 64> float_to_bfloat_bits(vec<float, 64> x) {
+        vec<ushort, 64> result = {};
+        #pragma clang loop unroll(full)
+        for (uint i = 0; i < 64; i += 1) {
+            result[i] = float_to_bfloat_bits(x[i]);
+        }
+        return result;
+    }
+    
+    constexpr METAL_FUNC vec<float, 64> bfloat_bits_to_float(vec<ushort, 64> x) {
+      vec<float, 64> result = {};
+      #pragma clang loop unroll(full)
+      for (uint i = 0; i < 64; i += 1) {
+          result[i] = bfloat_bits_to_float(x[i]);
+      }
+      return result;
+    }
+    
+    
+    METAL_FUNC void multiply(simdgroup_matrix_storage<ushort> a, simdgroup_matrix_storage<ushort> b, bool accumulate = true) {
+      if (!accumulate) {
+        *(thread_elements()) = vec<T, 2>(0);
+      }
+      t = float_to_bfloat_bits(__metal_simdgroup_matrix_8x8_multiply_accumulate(
+                                                           bfloat_bits_to_float(a.t),
+                                                           bfloat_bits_to_float(b.t),
+                                                           bfloat_bits_to_float(t),
+                                                           typename simdgroup_matrix_storage<T>::multiply_type()
+                                                           ));
+    }
     // 'bfloat' is 'float' with the lower 16 bits set to garbage (BF15).
     
     METAL_FUNC thread ushort4* thread_elements_bfloat() thread {

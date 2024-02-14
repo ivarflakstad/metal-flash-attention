@@ -39,6 +39,7 @@
 		98C795302A4C71A400DB688D /* Atomics in Frameworks */ = {isa = PBXBuildFile; productRef = 98C7952F2A4C71A400DB688D /* Atomics */; };
 		98C795322A4DC1F200DB688D /* GEMMSquareBenchmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98C795312A4DC1F200DB688D /* GEMMSquareBenchmark.swift */; };
 		98F2F5DD2A60978C006216F4 /* GEMMTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F2F5DC2A60978C006216F4 /* GEMMTest.swift */; };
+		C58AC3982B87EC4000C1BAC9 /* Bfloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = C58AC3972B87EC4000C1BAC9 /* Bfloat.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -70,7 +71,7 @@
 		9835F4702A4B39290095D0D0 /* Metal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Metal.swift; sourceTree = "<group>"; };
 		9835F4722A4B39C80095D0D0 /* NumPy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumPy.swift; sourceTree = "<group>"; };
 		9835F4742A4B4B550095D0D0 /* metal_data_type */ = {isa = PBXFileReference; explicitFileType = sourcecode.metal; path = metal_data_type; sourceTree = "<group>"; };
-		9835F47A2A4B4F300095D0D0 /* libMetalFlashAttention.metallib */ = {isa = PBXFileReference; lastKnownFileType = "archive.metal-library"; name = libMetalFlashAttention.metallib; path = lib/libMetalFlashAttention.metallib; sourceTree = "<group>"; };
+		9835F47A2A4B4F300095D0D0 /* libMetalFlashAttention.metallib */ = {isa = PBXFileReference; explicitFileType = sourcecode.asm.llvm; name = libMetalFlashAttention.metallib; path = lib/libMetalFlashAttention.metallib; sourceTree = "<group>"; };
 		9835F47C2A4B53F40095D0D0 /* Operation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Operation.swift; sourceTree = "<group>"; };
 		9835F47E2A4B55580095D0D0 /* TensorBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TensorBuffer.swift; sourceTree = "<group>"; };
 		9835F4812A4B58530095D0D0 /* DataType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataType.swift; sourceTree = "<group>"; };
@@ -91,7 +92,7 @@
 		987E36072A45E5D200ACACE3 /* SGEMM.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SGEMM.png; sourceTree = "<group>"; };
 		987E36082A45E5D200ACACE3 /* old-simdgroup-matrix-internals.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = "old-simdgroup-matrix-internals.hpp"; sourceTree = "<group>"; };
 		987E360D2A45E6A100ACACE3 /* metal_simdgroup_event */ = {isa = PBXFileReference; explicitFileType = sourcecode.metal; path = metal_simdgroup_event; sourceTree = "<group>"; };
-		987E36122A45E74800ACACE3 /* metal_simdgroup_matrix_storage */ = {isa = PBXFileReference; explicitFileType = sourcecode.metal; path = metal_simdgroup_matrix_storage; sourceTree = "<group>"; };
+		987E36122A45E74800ACACE3 /* metal_simdgroup_matrix_storage */ = {isa = PBXFileReference; explicitFileType = sourcecode.metal; indentWidth = 2; path = metal_simdgroup_matrix_storage; sourceTree = "<group>"; tabWidth = 2; };
 		987E36142A45E90700ACACE3 /* GEMM.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = GEMM.metal; sourceTree = "<group>"; };
 		98C795172A4B730E00DB688D /* Tensor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tensor.swift; sourceTree = "<group>"; };
 		98C7951A2A4B73A000DB688D /* EuclideanDistance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EuclideanDistance.swift; sourceTree = "<group>"; };
@@ -100,7 +101,7 @@
 		98C795212A4B8D0E00DB688D /* Attention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attention.swift; sourceTree = "<group>"; };
 		98C795232A4B8D1600DB688D /* Convolution.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Convolution.swift; sourceTree = "<group>"; };
 		98C795252A4B8D3E00DB688D /* Normalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Normalization.swift; sourceTree = "<group>"; };
-		98C795272A4B95EC00DB688D /* GEMMPerfTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GEMMPerfTests.swift; sourceTree = "<group>"; };
+		98C795272A4B95EC00DB688D /* GEMMPerfTests.swift */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = GEMMPerfTests.swift; sourceTree = "<group>"; tabWidth = 2; };
 		98C795292A4B962B00DB688D /* MFATestCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MFATestCase.swift; sourceTree = "<group>"; };
 		98C7952B2A4C714400DB688D /* Random.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Random.swift; sourceTree = "<group>"; };
 		98C795312A4DC1F200DB688D /* GEMMSquareBenchmark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GEMMSquareBenchmark.swift; sourceTree = "<group>"; };
@@ -108,11 +109,14 @@
 		98DFBD0D2A72F242002E4B47 /* float32-large-causal-latest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "float32-large-causal-latest.png"; sourceTree = "<group>"; };
 		98DFBD0E2A72F92C002E4B47 /* float16-small-causal-latest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "float16-small-causal-latest.png"; sourceTree = "<group>"; };
 		98F2F5DC2A60978C006216F4 /* GEMMTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GEMMTest.swift; sourceTree = "<group>"; };
-		98F7440E2A4A008C00B5E60A /* build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = build.swift; sourceTree = "<group>"; };
+		98F7440E2A4A008C00B5E60A /* build.swift */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = build.swift; sourceTree = "<group>"; tabWidth = 2; };
 		98F7440F2A4A0CB200B5E60A /* API.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = API.md; sourceTree = "<group>"; };
 		98FDDEFD2A5870220096BC27 /* float32-nn-latest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "float32-nn-latest.png"; sourceTree = "<group>"; };
 		98FDDEFE2A5871800096BC27 /* float16-nn-latest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "float16-nn-latest.png"; sourceTree = "<group>"; };
 		98FDDEFF2A587CC10096BC27 /* float32-nt-latest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "float32-nt-latest.png"; sourceTree = "<group>"; };
+		C58AC3972B87EC4000C1BAC9 /* Bfloat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bfloat.swift; sourceTree = "<group>"; };
+		C595B6322B568B030095217D /* tmp_backup */ = {isa = PBXFileReference; lastKnownFileType = text; path = tmp_backup; sourceTree = SOURCE_ROOT; };
+		C595B6332B568B030095217D /* temp */ = {isa = PBXFileReference; lastKnownFileType = text; path = temp; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -166,6 +170,7 @@
 				9835F46A2A4B36E70095D0D0 /* MetalPerformanceShadersGraph.swift */,
 				9835F4722A4B39C80095D0D0 /* NumPy.swift */,
 				9835F46C2A4B36F60095D0D0 /* Python.swift */,
+				C58AC3972B87EC4000C1BAC9 /* Bfloat.swift */,
 			);
 			path = Libraries;
 			sourceTree = "<group>";
@@ -230,6 +235,8 @@
 				9802CB392A72A687004AFD03 /* metal_fault_counter */,
 				987E360D2A45E6A100ACACE3 /* metal_simdgroup_event */,
 				987E36122A45E74800ACACE3 /* metal_simdgroup_matrix_storage */,
+				C595B6332B568B030095217D /* temp */,
+				C595B6322B568B030095217D /* tmp_backup */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -307,7 +314,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 1510;
 				TargetAttributes = {
 					987E35DA2A45E4F400ACACE3 = {
 						CreatedOnToolsVersion = 15.0;
@@ -367,6 +374,7 @@
 				98C795182A4B730E00DB688D /* Tensor.swift in Sources */,
 				98C7951D2A4B8AFF00DB688D /* TensorBackend.swift in Sources */,
 				9835F4822A4B58530095D0D0 /* DataType.swift in Sources */,
+				C58AC3982B87EC4000C1BAC9 /* Bfloat.swift in Sources */,
 				9835F47D2A4B53F40095D0D0 /* Operation.swift in Sources */,
 				980EDCFD2A4E10A100BC9BF0 /* CorrectnessTests.swift in Sources */,
 				987E35DF2A45E4F400ACACE3 /* main.swift in Sources */,
@@ -432,6 +440,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -495,6 +504,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -522,7 +532,8 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MetalFlashAttention.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 6T952M2592;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -537,7 +548,8 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MetalFlashAttention.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 6T952M2592;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";

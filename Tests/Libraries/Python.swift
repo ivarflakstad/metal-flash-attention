@@ -17,11 +17,7 @@ struct PythonContext {
   var mpl: PythonObject
   
   init() {
-    let downloadsURL = FileManager.default.urls(
-      for: .downloadsDirectory, in: .userDomainMask)[0]
-    let homePath = downloadsURL.deletingLastPathComponent().relativePath
-    let packages = homePath + "/miniforge3/lib/python3.11/site-packages"
-    setenv("PYTHONPATH", packages, 1)
+    setenv("PYTHON_VERSION", "3.11", 1)
     
     self.ctypes = Python.import("ctypes")
     self.np = Python.import("numpy")

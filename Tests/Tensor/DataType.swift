@@ -48,6 +48,10 @@ extension Float: TensorFloatingPoint {
   static var mtlDataType: MTLDataType { .float }
 }
 
+extension BFloat: TensorFloatingPoint {
+    static var mtlDataType: MTLDataType { .ushort }
+}
+
 // MARK: - MTLDataType Extensions
 
 extension MTLDataType {
@@ -58,6 +62,7 @@ extension MTLDataType {
   var mps: MPSDataType {
     switch self {
     case .half: return .float16
+    case .ushort: return .bFloat16
     case .float: return .float32
     default: unrecognizedError()
     }
@@ -67,6 +72,7 @@ extension MTLDataType {
     let ctx = PythonContext.global
     switch self {
     case .half: return ctx.np.float16
+    case .ushort: return ctx.np.float32
     case .float: return ctx.np.float32
     default: unrecognizedError()
     }
@@ -75,6 +81,8 @@ extension MTLDataType {
   var size: Int {
     switch self {
     case .half: return 2
+    case .bfloat: return 2
+    case .ushort: return 2
     case .float: return 4
     default: unrecognizedError()
     }

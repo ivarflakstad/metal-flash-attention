@@ -10,7 +10,7 @@ import Foundation
 class MFATestCase {
   // Global setting for the precision used in tests.
   #if arch(arm64)
-  typealias Real = Float32
+  typealias Real = BFloat
   #else
   typealias Real = Float
   #endif

@@ -11,12 +11,213 @@
 // Contains C++ symbols accessible to a developer through automatic code
 // completion in Xcode 14.2. Formatted with the same style as the Metal Standard
 // Library for consistency with other Metal code.
-
+#include <metal_stdlib>
 #if defined(__HAVE_SIMDGROUP_MATRIX__)
 #pragma METAL internals : enable
+
+namespace bfloat16_impl {
+
+  template <typename T>
+  struct is_float_double {
+    constexpr static constant bool value = false;
+  };
+  template <>
+  struct is_float_double<half> {
+    constexpr static constant bool value = true;
+  };
+  template <>
+  struct is_float_double<float> {
+    constexpr static constant bool value = true;
+  };
+
+  union float_raw {
+    float f;
+    uint32_t i;
+  };
+
+  METAL_FUNC uint32_t float_to_raw(float f) {
+    float_raw r;
+    r.f = f;
+    return r.i;
+  }
+
+  METAL_FUNC float raw_to_float(uint32_t i) {
+    float_raw r;
+    r.i = i;
+    return r.f;
+  }
+
+} /* namespace bfloat16_impl */
+
 namespace metal
 {
+  
+  struct bf16 {
+    ushort raw;
 
+    bf16(int raw_) : raw(raw_) {}
+    bf16(ushort raw_) : raw(raw_) {}
+
+    bf16() = default;
+    METAL_FUNC bf16(float f);
+//    template <typename T, typename metal::enable_if_t<is_integral_v<T>>>
+//    bf16(T i): bf16(float(i)) {}
+
+    METAL_FUNC operator float() const;
+    METAL_FUNC operator ushort() const;
+
+    bf16 operator+() const {
+        return *this;
+    }
+    bf16 operator-() const {
+      bf16 h = *this;
+      h.raw ^= 0x8000;
+      return h;
+    }
+
+    bf16 operator++() {
+        return (*this = *this + bf16(ushort(1)));
+    }
+    bf16 operator++(int) {
+      bf16 h = *this;
+      ++*this;
+      return h;
+    }
+    bf16 operator--() {
+      return (*this = *this - bf16(ushort(1)));
+    }
+    bf16 operator--(int) {
+      bf16 h = *this;
+      --*this;
+      return h;
+    }
+
+    friend float operator+(const bf16 h1, const bf16 h2) {
+        return float(h1) + float(h2);
+    }
+    friend float operator-(const bf16 h1, const bf16 h2) {
+        return float(h1) - float(h2);
+    }
+    friend float operator*(const bf16 h1, const bf16 h2) {
+        return float(h1) * float(h2);
+    }
+    friend float operator/(const bf16 h1, const bf16 h2) {
+        return float(h1) / float(h2);
+    }
+    /*
+    template <typename T>
+    friend typename std::enable_if<std::is_integral<T>::value, float>::type operator+(
+        const bfloat16 &h, const T &o) {
+        return float(h) + float(o);
+    }
+    template <typename T>
+    friend typename std::enable_if<std::is_integral<T>::value, float>::type operator-(
+        const bfloat16 &h, const T &o) {
+        return float(h) - float(o);
+    }
+    template <typename T>
+    friend typename std::enable_if<std::is_integral<T>::value, float>::type operator*(
+        const bfloat16 &h, const T &o) {
+        return float(h) * float(o);
+    }
+    template <typename T>
+    friend typename std::enable_if<std::is_integral<T>::value, float>::type operator/(
+        const bfloat16 &h, const T &o) {
+        return float(h) / float(o);
+    }
+    template <typename T>
+    friend typename std::enable_if<std::is_integral<T>::value, float>::type operator+(
+        const T &o, const bfloat16 &h) {
+        return float(o) + float(h);
+    }
+    template <typename T>
+    friend typename std::enable_if<std::is_integral<T>::value, float>::type operator-(
+        const T &o, const bfloat16 &h) {
+        return float(o) - float(h);
+    }
+    template <typename T>
+    friend typename std::enable_if<std::is_integral<T>::value, float>::type operator*(
+        const T &o, const bfloat16 &h) {
+        return float(o) * float(h);
+    }
+    template <typename T>
+    friend typename std::enable_if<std::is_integral<T>::value, float>::type operator/(
+        const T &o, const bfloat16 &h) {
+        return float(o) / float(h);
+    }
+
+    template <typename T, typename enable_if_t<bfloat16_impl::is_float_double<T>::value, T>::type>
+    friend  operator+(
+        const bfloat16 &h, const T &o) {
+        return float(h) + o;
+    }
+    template <typename T>
+    friend typename std::enable_if<bfloat16_impl::is_float_double<T>::value, T>::type operator-(
+        const bfloat16 &h, const T &o) {
+        return float(h) - o;
+    }
+    template <typename T>
+    friend typename std::enable_if<bfloat16_impl::is_float_double<T>::value, T>::type operator*(
+        const bfloat16 &h, const T &o) {
+        return float(h) * o;
+    }
+    template <typename T>
+    friend typename std::enable_if<bfloat16_impl::is_float_double<T>::value, T>::type operator/(
+        const bfloat16 &h, const T &o) {
+        return float(h) / o;
+    }
+    template <typename T>
+    friend typename std::enable_if<bfloat16_impl::is_float_double<T>::value, T>::type operator+(
+        const T &o, const bfloat16 &h) {
+        return o + float(h);
+    }
+    template <typename T>
+    friend typename std::enable_if<bfloat16_impl::is_float_double<T>::value, T>::type operator-(
+        const T &o, const bfloat16 &h) {
+        return o - float(h);
+    }
+    template <typename T>
+    friend typename std::enable_if<bfloat16_impl::is_float_double<T>::value, T>::type operator*(
+        const T &o, const bfloat16 &h) {
+        return o * float(h);
+    }
+    template <typename T>
+    friend typename std::enable_if<bfloat16_impl::is_float_double<T>::value, T>::type operator/(
+        const T &o, const bfloat16 &h) {
+        return o / float(h);
+    }
+     */
+
+    template <typename T>
+    bf16 operator+=(const T o) {
+        return *this = bf16(*this + o);
+    }
+    template <typename T>
+    bf16 operator-=(const T o) {
+        return *this = bf16(*this - o);
+    }
+    template <typename T>
+    bf16 operator*=(const T o) {
+        return *this = bf16(*this * o);
+    }
+    template <typename T>
+    bf16 operator/=(const T o) {
+        return *this = bf16(*this / o);
+    }
+};
+
+bf16::bf16(float f) {
+  raw = bfloat16_impl::float_to_raw(f) >> 16; // RTZ
+}
+
+METAL_FUNC bf16::operator float() const {
+  return bfloat16_impl::raw_to_float(raw << 16);
+}
+
+METAL_FUNC bf16::operator ushort() const {
+  return raw;
+}
+  
   template <typename T, typename M = float>
   struct simdgroup_matrix_storage {
     typedef vec<T, 64> storage_type;
@@ -155,6 +356,7 @@ namespace metal
       // Round to nearest even
       float_bits += ((float_bits >> 16) & 1) + as_type<uint>(0x7FFF);
 
+      
       // Take upper 16 bits
       return float_bits >> 16;
     }
@@ -163,11 +365,20 @@ namespace metal
       return as_type<float>((uint)x << 16);
     }
     
+    constexpr METAL_FUNC vec<ushort, 64> __float_to_bfloat_bits(vec<float, 64> x) {
+        vec<ushort, 64> result = {};
+        #pragma clang loop unroll(full)
+        for (uint i = 0; i < 64; i += 1) {
+          result[i] = bf16(x[i]);
+        }
+        return result;
+    }
+    
     constexpr METAL_FUNC vec<ushort, 64> float_to_bfloat_bits(vec<float, 64> x) {
         vec<ushort, 64> result = {};
         #pragma clang loop unroll(full)
         for (uint i = 0; i < 64; i += 1) {
-            result[i] = float_to_bfloat_bits(x[i]);
+          result[i] = bf16(x[i]);
         }
         return result;
     }
@@ -176,7 +387,7 @@ namespace metal
       vec<float, 64> result = {};
       #pragma clang loop unroll(full)
       for (uint i = 0; i < 64; i += 1) {
-          result[i] = bfloat_bits_to_float(x[i]);
+        result[i] = bf16(x[i]);
       }
       return result;
     }
@@ -186,6 +397,7 @@ namespace metal
       if (!accumulate) {
         *(thread_elements()) = vec<T, 2>(0);
       }
+      
       t = float_to_bfloat_bits(__metal_simdgroup_matrix_8x8_multiply_accumulate(
                                                            bfloat_bits_to_float(a.t),
                                                            bfloat_bits_to_float(b.t),

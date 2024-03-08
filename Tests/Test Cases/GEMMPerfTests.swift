@@ -248,7 +248,8 @@ class GEMMPerfTests: MFATestCase {
               MPL_showComparison(
                 actual: C, actualName: self.currentConfig!.name,
                 expected: mps_C, expectedName: "MPS", parameters: params)
-              fatalError("Tensors did not match.")
+              let distance = C.euclideanDistance(to: mps_C)
+              fatalError("Tensors did not match. Euclidean distance: \(distance)")
             }
             
             mps_A.buffer.release()
@@ -311,6 +312,8 @@ class GEMMPerfTests: MFATestCase {
               var message = "\(size)x\(size)x\(size)"
               if Real.self == Float.self {
                 message += "xf32"
+              } else if Real.self == BFloat.self {
+                message += "xbf16"
               } else {
                 message += "xf16"
               }
@@ -462,6 +465,8 @@ class GEMMPerfTests: MFATestCase {
 #endif
     if Real.self == Float.self {
       plt.title("Float32 Utilization (\(configRepr))\(debugWarning)")
+    } else if Real.self == BFloat.self {
+      plt.title("BFloat16 Utilization (\(configRepr))\(debugWarning)")
     } else {
       plt.title("Float16 Utilization (\(configRepr))\(debugWarning)")
     }

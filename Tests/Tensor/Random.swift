@@ -25,11 +25,11 @@ class RandomNumberGenerator {
     elements: Int,
     dataType: MTLDataType
   ) {
-    if dataType != .float, dataType != .half {
-      fatalError("Data type was not FP16 or FP32.")
+    if dataType != .float, dataType != .half, dataType != .ushort {
+      fatalError("Data type was not FP32, FP16, or BF16.")
     }
     var _pointer = pointer
-    if dataType == .half {
+    if dataType == .half, dataType == .ushort {
       _pointer = malloc(elements * 4)!
     }
     
@@ -40,7 +40,7 @@ class RandomNumberGenerator {
     BNNSRandomFillUniformFloat(
       generator, &arrayDescriptor, range.lowerBound, range.upperBound)
     
-    if dataType == .half {
+    if dataType == .half, dataType == .ushort {
       let width = UInt(elements)
       var bufferFloat32 = vImage_Buffer(
         data: _pointer, height: 1, width: width, rowBytes: elements * 4)

@@ -121,7 +121,7 @@ struct Tensor<Element: TensorElement> {
         if lowerRangeStart < lowerRangeEnd {
           let len = lowerRangeEnd - lowerRangeStart
           let pattern = SIMD2<Element>(repeating: .zero)
-          if Element.mtlDataType == .half {
+          if Element.mtlDataType == .half || Element.mtlDataType == .ushort {
             var copy = unsafeBitCast(pattern, to: UInt32.self)
             memset_pattern4(pointer + lowerRangeStart, &copy, len * 2)
           } else {
@@ -142,7 +142,7 @@ struct Tensor<Element: TensorElement> {
         if upperRangeStart < upperRangeEnd {
           let len = upperRangeEnd - upperRangeStart
           let pattern = SIMD2<Element>(repeating: -.greatestFiniteMagnitude)
-          if Element.mtlDataType == .half {
+          if Element.mtlDataType == .half || Element.mtlDataType == .ushort {
             var copy = unsafeBitCast(pattern, to: UInt32.self)
             memset_pattern4(pointer + upperRangeStart, &copy, len * 2)
           } else {

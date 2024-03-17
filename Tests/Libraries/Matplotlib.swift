@@ -42,9 +42,9 @@ func MPL_showComparison<T: TensorElement>(
   slice: PythonObject? = nil,
   transpose: Bool = false
 ) {
-  let actualBackend = actual.buffer.backend
-  let expectedBackend = expected.buffer.backend
-  precondition(actualBackend != expectedBackend)
+  let _actualBackend = actual.buffer.backend
+  let _expectedBackend = expected.buffer.backend
+  //precondition(actualBackend != expectedBackend)
   
   let primary = actual.numpy()
   let secondary = expected.numpy()

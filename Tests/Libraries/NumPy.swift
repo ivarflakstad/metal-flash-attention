@@ -68,7 +68,7 @@ final class Py_TensorBuffer: TensorBuffer {
   
   init(unsafeUninitializedShape shape: [Int], dataType: MTLDataType) {
     if _ExecutionContext.logTensorCreation {
-      print("NumPy tensor created: \(shape)")
+      print("NumPy tensor created")
     }
     self.shape = shape
     self.dataType = dataType

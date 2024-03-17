@@ -104,89 +104,6 @@ namespace metal
     friend float operator/(const bf16 h1, const bf16 h2) {
         return float(h1) / float(h2);
     }
-    /*
-    template <typename T>
-    friend typename std::enable_if<std::is_integral<T>::value, float>::type operator+(
-        const bfloat16 &h, const T &o) {
-        return float(h) + float(o);
-    }
-    template <typename T>
-    friend typename std::enable_if<std::is_integral<T>::value, float>::type operator-(
-        const bfloat16 &h, const T &o) {
-        return float(h) - float(o);
-    }
-    template <typename T>
-    friend typename std::enable_if<std::is_integral<T>::value, float>::type operator*(
-        const bfloat16 &h, const T &o) {
-        return float(h) * float(o);
-    }
-    template <typename T>
-    friend typename std::enable_if<std::is_integral<T>::value, float>::type operator/(
-        const bfloat16 &h, const T &o) {
-        return float(h) / float(o);
-    }
-    template <typename T>
-    friend typename std::enable_if<std::is_integral<T>::value, float>::type operator+(
-        const T &o, const bfloat16 &h) {
-        return float(o) + float(h);
-    }
-    template <typename T>
-    friend typename std::enable_if<std::is_integral<T>::value, float>::type operator-(
-        const T &o, const bfloat16 &h) {
-        return float(o) - float(h);
-    }
-    template <typename T>
-    friend typename std::enable_if<std::is_integral<T>::value, float>::type operator*(
-        const T &o, const bfloat16 &h) {
-        return float(o) * float(h);
-    }
-    template <typename T>
-    friend typename std::enable_if<std::is_integral<T>::value, float>::type operator/(
-        const T &o, const bfloat16 &h) {
-        return float(o) / float(h);
-    }
-
-    template <typename T, typename enable_if_t<bfloat16_impl::is_float_double<T>::value, T>::type>
-    friend  operator+(
-        const bfloat16 &h, const T &o) {
-        return float(h) + o;
-    }
-    template <typename T>
-    friend typename std::enable_if<bfloat16_impl::is_float_double<T>::value, T>::type operator-(
-        const bfloat16 &h, const T &o) {
-        return float(h) - o;
-    }
-    template <typename T>
-    friend typename std::enable_if<bfloat16_impl::is_float_double<T>::value, T>::type operator*(
-        const bfloat16 &h, const T &o) {
-        return float(h) * o;
-    }
-    template <typename T>
-    friend typename std::enable_if<bfloat16_impl::is_float_double<T>::value, T>::type operator/(
-        const bfloat16 &h, const T &o) {
-        return float(h) / o;
-    }
-    template <typename T>
-    friend typename std::enable_if<bfloat16_impl::is_float_double<T>::value, T>::type operator+(
-        const T &o, const bfloat16 &h) {
-        return o + float(h);
-    }
-    template <typename T>
-    friend typename std::enable_if<bfloat16_impl::is_float_double<T>::value, T>::type operator-(
-        const T &o, const bfloat16 &h) {
-        return o - float(h);
-    }
-    template <typename T>
-    friend typename std::enable_if<bfloat16_impl::is_float_double<T>::value, T>::type operator*(
-        const T &o, const bfloat16 &h) {
-        return o * float(h);
-    }
-    template <typename T>
-    friend typename std::enable_if<bfloat16_impl::is_float_double<T>::value, T>::type operator/(
-        const T &o, const bfloat16 &h) {
-        return o / float(h);
-    }
-     */
 
     template <typename T>
     bf16 operator+=(const T o) {
@@ -217,6 +134,34 @@ METAL_FUNC bf16::operator float() const {
 METAL_FUNC bf16::operator ushort() const {
   return raw;
 }
+  
+  
+  struct bf16_2 {
+    bf16 x;
+    bf16 y;
+    
+    bf16_2(int2 raw_) : x(raw_.x), y(raw_.y) {}
+    bf16_2(ushort2 raw_) : x(raw_.x), y(raw_.y) {}
+
+    bf16_2() = default;
+    METAL_FUNC bf16_2(float2 f);
+    
+    METAL_FUNC operator float2() const;
+    METAL_FUNC operator ushort2() const;
+  };
+  
+  bf16_2::bf16_2(float2 f) {
+    x = bf16(f.x);
+    y = bf16(f.y);
+  }
+  
+  METAL_FUNC bf16_2::operator float2() const {
+    return float2{ float(x), float(y) };
+  }
+  
+  METAL_FUNC bf16_2::operator ushort2() const {
+    return ushort2{  ushort(x), ushort(y) };
+  }
   
   template <typename T, typename M = float>
   struct simdgroup_matrix_storage {
@@ -345,27 +290,13 @@ METAL_FUNC bf16::operator ushort() const {
       t = __metal_simdgroup_matrix_8x8_multiply_accumulate(a.t, b.t, t, typename simdgroup_matrix_storage<T>::storage_type());
     }
     
-    constexpr METAL_FUNC ushort float_to_bfloat_bits(float x) {
-      // Check for nan
-      if ((as_type<uint>(x) & ~_fp_encoding_traits<float>::sign_mask) > _fp_encoding_traits<float>::inf_mask) {
-        return ushort(as_type<uint>(0x7FC0));
-      }
-      // Take bits
-      uint float_bits = as_type<uint>(x);
-
-      // Round to nearest even
-      float_bits += ((float_bits >> 16) & 1) + as_type<uint>(0x7FFF);
-
-      
-      // Take upper 16 bits
-      return float_bits >> 16;
-    }
+//    constexpr METAL_FUNC thread ushort2* float_to_bfloat_bits(vec<float, 64> x) thread {
+//      
+//      thread ushort2 a = ushort2 { bf16(x[0]), bf16(x[1]) };
+//      return reinterpret_cast<thread ushort2*>(&a);
+//    }
     
-    constexpr METAL_FUNC float bfloat_bits_to_float(ushort x) {
-      return as_type<float>((uint)x << 16);
-    }
-    
-    constexpr METAL_FUNC vec<ushort, 64> __float_to_bfloat_bits(vec<float, 64> x) {
+    constexpr METAL_FUNC vec<ushort, 64> f_to_bf(vec<float, 64> x) {
         vec<ushort, 64> result = {};
         #pragma clang loop unroll(full)
         for (uint i = 0; i < 64; i += 1) {
@@ -374,37 +305,65 @@ METAL_FUNC bf16::operator ushort() const {
         return result;
     }
     
-    constexpr METAL_FUNC vec<ushort, 64> float_to_bfloat_bits(vec<float, 64> x) {
-        vec<ushort, 64> result = {};
+    constexpr METAL_FUNC vec<float, 64> bf_to_f(vec<ushort, 64> x) {
+        vec<float, 64> result = {};
         #pragma clang loop unroll(full)
         for (uint i = 0; i < 64; i += 1) {
           result[i] = bf16(x[i]);
         }
         return result;
-    }
-    
-    constexpr METAL_FUNC vec<float, 64> bfloat_bits_to_float(vec<ushort, 64> x) {
-      vec<float, 64> result = {};
-      #pragma clang loop unroll(full)
-      for (uint i = 0; i < 64; i += 1) {
-        result[i] = bf16(x[i]);
-      }
-      return result;
     }
     
     
     METAL_FUNC void multiply(simdgroup_matrix_storage<ushort> a, simdgroup_matrix_storage<ushort> b, bool accumulate = true) {
+      multiply_bf16_alt1(a, b, accumulate);
+    }
+    
+    
+    METAL_FUNC void multiply_bf16_alt2(simdgroup_matrix_storage<ushort> a, simdgroup_matrix_storage<ushort> b, bool accumulate = true) {
       if (!accumulate) {
         *(thread_elements()) = vec<T, 2>(0);
       }
       
-      t = float_to_bfloat_bits(__metal_simdgroup_matrix_8x8_multiply_accumulate(
-                                                           bfloat_bits_to_float(a.t),
-                                                           bfloat_bits_to_float(b.t),
-                                                           bfloat_bits_to_float(t),
-                                                           typename simdgroup_matrix_storage<T>::multiply_type()
-                                                           ));
+      simdgroup_matrix_storage<float> temp_a;
+      *(temp_a.thread_elements()) = load_bfloat_input(a.thread_elements());
+      simdgroup_matrix_storage<float> temp_b;
+      *(temp_b.thread_elements()) = load_bfloat_input(b.thread_elements());
+      
+      simdgroup_matrix_storage<float> temp_result;
+      *(temp_result.thread_elements()) = load_bfloat_input(thread_elements());
+      temp_result.t = __metal_simdgroup_matrix_8x8_multiply_accumulate(
+                                                                   temp_a.t,
+                                                                   temp_b.t,
+                                                                   temp_result.t,
+                                                                   typename simdgroup_matrix_storage<M>::storage_type()
+                                                                   );
+      store_bfloat_result(temp_result.thread_elements());
     }
+    
+    
+    METAL_FUNC void multiply_bf16_alt1(simdgroup_matrix_storage<ushort> a, simdgroup_matrix_storage<ushort> b, bool accumulate = true) {
+      if (!accumulate) {
+        *(thread_elements()) = vec<T, 2>(0);
+      }
+      
+      t = f_to_bf(__metal_simdgroup_matrix_8x8_multiply_accumulate(
+                                                                   bf_to_f(a.t),
+                                                                   bf_to_f(b.t),
+                                                                   bf_to_f(t),
+                                                                   typename simdgroup_matrix_storage<M>::storage_type()
+                                                                   ));
+    }
+    
+    
+    METAL_FUNC vec<float, 2> load_bfloat_input(thread vec<ushort, 2> *a) thread {
+      return vec<float, 2>( bf16((*a)[0]), bf16((*a)[1]) );
+    }
+    
+    METAL_FUNC void store_bfloat_result(thread vec<float, 2> *a) thread {
+      *(thread_elements()) = vec<ushort, 2>( bf16((*a)[0]), bf16((*a)[1]) );
+    }
+    
     // 'bfloat' is 'float' with the lower 16 bits set to garbage (BF15).
     
     METAL_FUNC thread ushort4* thread_elements_bfloat() thread {

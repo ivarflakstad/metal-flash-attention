@@ -33,12 +33,10 @@ class RandomNumberGenerator {
       _pointer = malloc(elements * 4)!
     }
     
-    let bufferPointer = UnsafeMutableBufferPointer(
-      start: _pointer.assumingMemoryBound(to: Float.self), count: elements)
-    var arrayDescriptor = BNNSNDArrayDescriptor(
-      data: bufferPointer, shape: .vector(elements))!
-    BNNSRandomFillUniformFloat(
-      generator, &arrayDescriptor, range.lowerBound, range.upperBound)
+    let bufferPointer = UnsafeMutableBufferPointer(start: _pointer.assumingMemoryBound(to: Float.self), count: elements)
+    var arrayDescriptor = BNNSNDArrayDescriptor(data: bufferPointer, shape: .vector(elements))!
+      
+    BNNSRandomFillUniformFloat(generator, &arrayDescriptor, range.lowerBound, range.upperBound)
     
     if dataType == .half, dataType == .ushort {
       let width = UInt(elements)
@@ -47,8 +45,8 @@ class RandomNumberGenerator {
       var bufferFloat16 = vImage_Buffer(
         data: pointer, height: 1, width: width, rowBytes: elements * 2)
       
-      let error = vImageConvert_PlanarFtoPlanar16F(
-        &bufferFloat32, &bufferFloat16, 0)
+      let error = vImageConvert_PlanarFtoPlanar16F(&bufferFloat32, &bufferFloat16, 0)
+        
       if error != kvImageNoError {
         fatalError(
           "Encountered error code \(error) while converting F16 to F32.")

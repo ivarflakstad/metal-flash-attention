@@ -53,8 +53,8 @@ struct MFA_GEMM: GEMM, MFA_Operation {
   var parameters: GEMM_Parameters
   
   static var functionConstants: [String: MTLConvertible] = [
-    "M_simd": UInt16(24), // 16-24
-    "N_simd": UInt16(24), // 16-24
+    "M_simd": UInt16(16), // 16-24
+    "N_simd": UInt16(16), // 16-24
     "K_simd": UInt16(32), // 24-32
     "M_splits": UInt16(2), // 2
     "N_splits": UInt16(2), // 2
@@ -114,7 +114,6 @@ struct MFA_GEMM: GEMM, MFA_Operation {
     switch dataType {
     case .half: name = "hgemm"
     case .float: name = "sgemm"
-    case .bfloat: name = "bgemm"
     case .ushort: name = "bgemm"
     default: fatalError()
     }

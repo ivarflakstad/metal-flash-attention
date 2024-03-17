@@ -67,7 +67,7 @@ class AsyncGraph: AsyncResource {
     self._semaphore = DispatchSemaphore(value: 0)
     
     let compileDesc = MPSGraphCompilationDescriptor()
-    compileDesc.optimizationLevel = .level1
+    compileDesc.optimizationLevel = .level0
     compileDesc.waitForCompilationCompletion = false
     compileDesc.compilationCompletionHandler = { executable, error in
       if let error {
@@ -112,11 +112,11 @@ final class MPS_TensorBuffer: TensorBuffer {
   private(set) var count: Int
   
   init(unsafeUninitializedShape shape: [Int], dataType: MTLDataType) {
-    //if _ExecutionContext.logTensorCreation {
-    //print("MPS tensor created: \(shape) \(dataType)")
-    //}
+    if _ExecutionContext.logTensorCreation {
+      print("MPS tensor created: \(shape) \(dataType)")
+    }
     self.shape = shape
-    self.dataType = MTLDataType.bfloat
+    self.dataType = dataType
     self.count = shape.reduce(1, *)
     
     let bufferSize = count * dataType.size

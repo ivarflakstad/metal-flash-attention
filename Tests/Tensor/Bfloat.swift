@@ -375,12 +375,13 @@ extension BFloat: BinaryFloatingPoint {
     @inlinable @inline(__always) public mutating func formRemainder(dividingBy other: BFloat) {
         self = BFloat(_stdlib_remainderf(Float(self), Float(other)))
     }
+    
     @inlinable @inline(__always) public mutating func formTruncatingRemainder(dividingBy other: BFloat) {
-        
         var f = Float(self)
         f.formTruncatingRemainder(dividingBy: Float(other))
         self = BFloat(f)
     }
+    
     @_transparent public mutating func formSquareRoot() {
         self = BFloat(_stdlib_squareRootf(Float(self)))
     }
@@ -463,15 +464,49 @@ extension BFloat: Hashable {
     }
 }
 
-extension BFloat: Encodable {
-    public func encode(to encoder: Encoder) {
-        
-    }
-}
+extension BFloat: Codable {
+    
+    /**
+     Creates a new instance by decoding from the given decoder.
 
-extension BFloat: Decodable {
-    public init(from decoder: Decoder) {
-        _value = 123
+     The way in which `BFloat` decodes itself is by first decoding the next largest
+     floating-point type that conforms to `Decodable` and then attempting to cast it
+     down to `BFloat`. This initializer throws an error if reading from the decoder
+     fails, if the data read is corrupted or otherwise invalid, or if the decoded
+     floating-point value is too large to fit in a `BFloat` type.
+
+     - Parameters:
+       - decoder: The decoder to read data from.
+     */
+    @_transparent
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let float = try container.decode(Float.self)
+
+        guard float.isInfinite || float.isNaN || abs(float) <= Float(BFloat.greatestFiniteMagnitude) else {
+            throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: container.codingPath, debugDescription: "Parsed number \(float) does not fit in \(type(of: self))."))
+        }
+
+        self.init(float)
+    }
+
+    /**
+     Encodes this value into the given encoder.
+
+     The way in which `BFloat` encodes itself is by first prompting itself to the next
+     largest floating-point type that conforms to `Encodable` and encoding that value
+     to the encoder. This function throws an error if any values are invalid for the
+     given encoder’s format.
+
+     - Parameters:
+       - encoder: The encoder to write data to.
+
+     - Note: This documentation comment was copied from `Double`.
+     */
+    @_transparent
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(Float(self))
     }
 }
 

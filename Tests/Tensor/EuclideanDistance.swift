@@ -96,11 +96,9 @@ extension Tensor {
       tolerance *= max(0.002 * averageMagnitude, 3e-7 * averageDeviation)
     case .half:
       tolerance *= max(0.02 * averageMagnitude, 1e-2 * averageDeviation)
-    case .bfloat:
-      tolerance *= max(0.02 * averageMagnitude, 1e-2 * averageDeviation)
     case .ushort:
       tolerance *= max(0.02 * averageMagnitude, 1e-2 * averageDeviation)
-      default: fatalError("Unknown metal data type \(Element.mtlDataType)")}
+    default: fatalError("Unknown metal data type \(Element.mtlDataType)")}
     
     let distance = euclideanDistance(to: other)
     if distance.isNaN {

@@ -60,107 +60,21 @@ namespace metal
 
     bf16() = default;
     METAL_FUNC bf16(float f);
-//    template <typename T, typename metal::enable_if_t<is_integral_v<T>>>
-//    bf16(T i): bf16(float(i)) {}
 
     METAL_FUNC operator float() const;
     METAL_FUNC operator ushort() const;
-
-    bf16 operator+() const {
-        return *this;
-    }
-    bf16 operator-() const {
-      bf16 h = *this;
-      h.raw ^= 0x8000;
-      return h;
-    }
-
-    bf16 operator++() {
-        return (*this = *this + bf16(ushort(1)));
-    }
-    bf16 operator++(int) {
-      bf16 h = *this;
-      ++*this;
-      return h;
-    }
-    bf16 operator--() {
-      return (*this = *this - bf16(ushort(1)));
-    }
-    bf16 operator--(int) {
-      bf16 h = *this;
-      --*this;
-      return h;
-    }
-
-    friend float operator+(const bf16 h1, const bf16 h2) {
-        return float(h1) + float(h2);
-    }
-    friend float operator-(const bf16 h1, const bf16 h2) {
-        return float(h1) - float(h2);
-    }
-    friend float operator*(const bf16 h1, const bf16 h2) {
-        return float(h1) * float(h2);
-    }
-    friend float operator/(const bf16 h1, const bf16 h2) {
-        return float(h1) / float(h2);
-    }
-
-    template <typename T>
-    bf16 operator+=(const T o) {
-        return *this = bf16(*this + o);
-    }
-    template <typename T>
-    bf16 operator-=(const T o) {
-        return *this = bf16(*this - o);
-    }
-    template <typename T>
-    bf16 operator*=(const T o) {
-        return *this = bf16(*this * o);
-    }
-    template <typename T>
-    bf16 operator/=(const T o) {
-        return *this = bf16(*this / o);
-    }
-};
-
-bf16::bf16(float f) {
-  raw = bfloat16_impl::float_to_raw(f) >> 16; // RTZ
-}
-
-METAL_FUNC bf16::operator float() const {
-  return bfloat16_impl::raw_to_float(raw << 16);
-}
-
-METAL_FUNC bf16::operator ushort() const {
-  return raw;
-}
-  
-  
-  struct bf16_2 {
-    bf16 x;
-    bf16 y;
-    
-    bf16_2(int2 raw_) : x(raw_.x), y(raw_.y) {}
-    bf16_2(ushort2 raw_) : x(raw_.x), y(raw_.y) {}
-
-    bf16_2() = default;
-    METAL_FUNC bf16_2(float2 f);
-    
-    METAL_FUNC operator float2() const;
-    METAL_FUNC operator ushort2() const;
   };
-  
-  bf16_2::bf16_2(float2 f) {
-    x = bf16(f.x);
-    y = bf16(f.y);
+
+  bf16::bf16(float f) {
+    raw = bfloat16_impl::float_to_raw(f) >> 16; // RTZ
   }
-  
-  METAL_FUNC bf16_2::operator float2() const {
-    return float2{ float(x), float(y) };
+
+  METAL_FUNC bf16::operator float() const {
+    return bfloat16_impl::raw_to_float(raw << 16);
   }
-  
-  METAL_FUNC bf16_2::operator ushort2() const {
-    return ushort2{  ushort(x), ushort(y) };
+
+  METAL_FUNC bf16::operator ushort() const {
+    return raw;
   }
   
   template <typename T, typename M = float>

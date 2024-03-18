@@ -15,67 +15,8 @@
 #if defined(__HAVE_SIMDGROUP_MATRIX__)
 #pragma METAL internals : enable
 
-namespace bfloat16_impl {
-
-  template <typename T>
-  struct is_float_double {
-    constexpr static constant bool value = false;
-  };
-  template <>
-  struct is_float_double<half> {
-    constexpr static constant bool value = true;
-  };
-  template <>
-  struct is_float_double<float> {
-    constexpr static constant bool value = true;
-  };
-
-  union float_raw {
-    float f;
-    uint32_t i;
-  };
-
-  METAL_FUNC uint32_t float_to_raw(float f) {
-    float_raw r;
-    r.f = f;
-    return r.i;
-  }
-
-  METAL_FUNC float raw_to_float(uint32_t i) {
-    float_raw r;
-    r.i = i;
-    return r.f;
-  }
-
-} /* namespace bfloat16_impl */
-
 namespace metal
 {
-  
-  struct bf16 {
-    ushort raw;
-
-    bf16(int raw_) : raw(raw_) {}
-    bf16(ushort raw_) : raw(raw_) {}
-
-    bf16() = default;
-    METAL_FUNC bf16(float f);
-
-    METAL_FUNC operator float() const;
-    METAL_FUNC operator ushort() const;
-  };
-
-  bf16::bf16(float f) {
-    raw = bfloat16_impl::float_to_raw(f) >> 16; // RTZ
-  }
-
-  METAL_FUNC bf16::operator float() const {
-    return bfloat16_impl::raw_to_float(raw << 16);
-  }
-
-  METAL_FUNC bf16::operator ushort() const {
-    return raw;
-  }
   
   template <typename T, typename M = float>
   struct simdgroup_matrix_storage {

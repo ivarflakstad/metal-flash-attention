@@ -38,7 +38,7 @@ class RandomNumberGenerator {
       
     BNNSRandomFillUniformFloat(generator, &arrayDescriptor, range.lowerBound, range.upperBound)
     
-    if dataType == .half, dataType == .ushort {
+    if dataType == .half {
       let width = UInt(elements)
       var bufferFloat32 = vImage_Buffer(
         data: _pointer, height: 1, width: width, rowBytes: elements * 4)

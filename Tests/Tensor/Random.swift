@@ -28,6 +28,17 @@ class RandomNumberGenerator {
     if dataType != .float, dataType != .half, dataType != .ushort {
       fatalError("Data type was not FP32, FP16, or BF16.")
     }
+      /*
+    if dataType == .ushort {
+      let bf16BufferPointer = UnsafeMutableBufferPointer(start: pointer.assumingMemoryBound(to: BFloat.self), count: elements)
+      //let floatArray = Array(bufferPointer);
+      for i in 0...elements {
+        bf16BufferPointer[i] = BFloat(1);
+      };
+      return;
+    }
+       */
+      
     var _pointer = pointer
     if dataType == .half, dataType == .ushort {
       _pointer = malloc(elements * 4)!

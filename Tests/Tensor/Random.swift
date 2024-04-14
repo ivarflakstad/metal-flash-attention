@@ -25,44 +25,33 @@ class RandomNumberGenerator {
     elements: Int,
     dataType: MTLDataType
   ) {
-    if dataType != .float, dataType != .half, dataType != .ushort {
+    let _pointer = switch dataType {
+    case .float:
+      pointer
+    case .half, .ushort:
+      malloc(elements * MemoryLayout<Float>.size)!
+    default:
       fatalError("Data type was not FP32, FP16, or BF16.")
-    }
-      /*
-    if dataType == .ushort {
-      let bf16BufferPointer = UnsafeMutableBufferPointer(start: pointer.assumingMemoryBound(to: BFloat.self), count: elements)
-      //let floatArray = Array(bufferPointer);
-      for i in 0...elements {
-        bf16BufferPointer[i] = BFloat(1);
-      };
-      return;
-    }
-       */
-      
-    var _pointer = pointer
-    if dataType == .half, dataType == .ushort {
-      _pointer = malloc(elements * 4)!
     }
     
     let bufferPointer = UnsafeMutableBufferPointer(start: _pointer.assumingMemoryBound(to: Float.self), count: elements)
     var arrayDescriptor = BNNSNDArrayDescriptor(data: bufferPointer, shape: .vector(elements))!
-      
     BNNSRandomFillUniformFloat(generator, &arrayDescriptor, range.lowerBound, range.upperBound)
     
-    if dataType == .half {
+    switch dataType {
+    case .half, .ushort:
       let width = UInt(elements)
-      var bufferFloat32 = vImage_Buffer(
-        data: _pointer, height: 1, width: width, rowBytes: elements * 4)
-      var bufferFloat16 = vImage_Buffer(
-        data: pointer, height: 1, width: width, rowBytes: elements * 2)
+      var bufferFloat32 = vImage_Buffer(data: _pointer, height: 1, width: width, rowBytes: elements * 4)
+      var bufferFloat16 = vImage_Buffer(data: pointer, height: 1, width: width, rowBytes: elements * 2)
       
       let error = vImageConvert_PlanarFtoPlanar16F(&bufferFloat32, &bufferFloat16, 0)
-        
+      
       if error != kvImageNoError {
-        fatalError(
-          "Encountered error code \(error) while converting F16 to F32.")
+        fatalError("Encountered error code \(error) while converting F16 to F32.")
       }
       _pointer.deallocate()
+    default:
+      return
     }
   }
 }

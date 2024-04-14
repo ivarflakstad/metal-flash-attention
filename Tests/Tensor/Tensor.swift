@@ -30,16 +30,10 @@ struct Tensor<Element: TensorElement> {
     backend: TensorBackend = .default
   ) {
     self.init(unsafeUninitializedShape: shape, backend: backend)
-    if Element.mtlDataType == .ushort {
-        let bufferPointer = UnsafeMutableBufferPointer(start: buffer.pointer.assumingMemoryBound(to: BFloat.self), count: count)
-        for i in 1...count {
-            bufferPointer[i-1] = BFloat(i);
-        };
-    } else {
-        RandomNumberGenerator.global.fillBuffer(
-          buffer.pointer, range: distribution, elements: count,
-          dataType: Element.mtlDataType)
-    }
+    RandomNumberGenerator.global.fillBuffer(
+      buffer.pointer, range: distribution, elements: count,
+      dataType: Element.mtlDataType)
+    
   }
   
   init(zerosLike shape: [Int], backend: TensorBackend = .default) {

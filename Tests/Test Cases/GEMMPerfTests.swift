@@ -131,9 +131,10 @@ class GEMMPerfTests: MFATestCase {
         batchSize: Int?, useBias: Bool
       ) {
         func innerLoop(size: Int, reportResults: Bool) {
+          typealias Inner = Real;
+          // MPS GEMM does not (currently) support BFloat
           if currentConfig == .mps && Real.self == BFloat.self {
-            self.flops[currentConfig!]!.append(0)
-            return
+            typealias Inner = Float;
           }
           
           if size % granularity != 0 {
@@ -176,22 +177,22 @@ class GEMMPerfTests: MFATestCase {
             shapeC = [batchSize] + shapeC
           }
           
-          let py_A = Tensor<Real>(
+          let py_A = Tensor<Inner>(
             shape: shapeA, randomUniform: 0..<1, backend: .numpy)
-          let py_B = Tensor<Real>(
+          let py_B = Tensor<Inner>(
             shape: shapeB, randomUniform: 0..<1, backend: .numpy)
-          var py_D: Tensor<Real>?
+          var py_D: Tensor<Inner>?
           if useBias {
-            py_D = Tensor<Real>(
+            py_D = Tensor<Inner>(
               shape: shapeD, randomUniform: 0..<1, backend: .numpy)
           }
           
           let A = Tensor(copying: py_A)
           let B = Tensor(copying: py_B)
-          var C = Tensor<Real>(zerosLike: shapeC)
-          var D: Tensor<Real>?
+          var C = Tensor<Inner>(zerosLike: shapeC)
+          var D: Tensor<Inner>?
           if useBias {
-            D = Tensor<Real>(copying: py_D!)
+            D = Tensor<Inner>(copying: py_D!)
           }
           
           let backend = TensorBackend.default
@@ -232,9 +233,9 @@ class GEMMPerfTests: MFATestCase {
           if isInitial {
             let mps_A = Tensor(copying: py_A, backend: .mps)
             let mps_B = Tensor(copying: py_B, backend: .mps)
-            var mps_C = Tensor<Real>(zerosLike: shapeC, backend: .mps)
+            var mps_C = Tensor<Inner>(zerosLike: shapeC, backend: .mps)
             
-            var mps_D: Tensor<Real>?
+            var mps_D: Tensor<Inner>?
             if let py_D {
               mps_D = Tensor(copying: py_D, backend: .mps)
             }
@@ -270,7 +271,6 @@ class GEMMPerfTests: MFATestCase {
         for size in sizes {
           innerLoop(size: size, reportResults: true)
         }
-        
       }
       
       mutating func profile(
@@ -314,22 +314,20 @@ class GEMMPerfTests: MFATestCase {
               if size % granularity != 0 {
                 continue
               }
-              var message = "\(size)x\(size)x\(size)"
-              if Real.self == Float.self {
-                message += "xf32"
-              } else if Real.self == BFloat.self {
-                message += "xbf16"
-              } else {
-                message += "xf16"
-              }
+              var message = "\(size)x\(size)x\(size)x\(Real.shortDescription)"
+              
               if let batchSize {
                 message = "\(batchSize)x\(message)"
               }
               for config in Config.fastConfigs {
                 let index = size - sizes.lowerBound
-                let gflops = Int(flops[config]![index] / 1e9)
+                var gflops = flops[config]![index] / 1e9
+                if config == .mps && Real.self == BFloat.self {
+                  // MPS bfloat is run with f32, so we half the flops.
+                  gflops /= 2.0;
+                }
                 message += " - \(config.name)"
-                message += " \(gflops)"
+                message += " \(Int(gflops))"
               }
               print(message)
             }
@@ -400,7 +398,12 @@ class GEMMPerfTests: MFATestCase {
           defer { sizeIndex += 1 }
           if size % (segment.granularity ?? granularity) == 0 {
             sizes.append(size)
-            speeds.append(flopsArray[sizeIndex])
+            if config == .mps && Real.self == BFloat.self {
+              // MPS bfloat is run with f32, so we half the flops.
+              speeds.append(flopsArray[sizeIndex] / 2.0)
+            } else {
+              speeds.append(flopsArray[sizeIndex])
+            }
           }
         }
       }

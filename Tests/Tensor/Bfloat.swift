@@ -115,9 +115,9 @@ extension BFloat: BinaryFloatingPoint {
     
     
     @inlinable public static var exponentBitCount: Int {
-        get {
-            return 8
-        }
+      get {
+        return 8
+      }
     }
     @inlinable public static var significandBitCount: Int {
         get {
@@ -724,8 +724,4 @@ extension BFloat : SIMDScalar {
         /// The type of scalars in the vector space.
         public typealias Scalar = BFloat
     }
-}
-
-extension BFloat : TensorElement {
-    
 }

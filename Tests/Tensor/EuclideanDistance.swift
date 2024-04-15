@@ -72,6 +72,13 @@ extension Tensor {
           return true
         }
       }
+    case .ushort:
+      let ptr = buffer.pointer.assumingMemoryBound(to: BFloat.self)
+      for i in 0..<elements {
+        if ptr[i].isNaN {
+          return true
+        }
+      }
     default:
       fatalError()
     }
@@ -116,13 +123,8 @@ extension UnsafeMutablePointer {
 }
 
 extension TensorBuffer {
+  
   func euclideanDistance(to other: TensorBuffer) -> Float {
-    
-    if self.dataType == .ushort {
-      // TODO: Since MPS doesn't have bfloat support we need a different way to verify.
-      return Float(0.0)
-    }
-    
     precondition(self.dataType == other.dataType)
     precondition(self.count == other.count)
     
@@ -131,29 +133,9 @@ extension TensorBuffer {
     defer { x_f32.deallocate() }
     defer { y_f32.deallocate() }
     
-    if dataType == .half {
-      // Partially sourced from:
-      // https://github.com/hollance/TensorFlow-iOS-Example/blob/master/VoiceMetal/VoiceMetal/Float16.swift
-      func copy(dst: UnsafeMutableRawPointer, src: UnsafeMutableRawPointer) {
-        let count = self.count
-        var bufferFloat16 = vImage_Buffer(
-          data: src, height: 1, width: UInt(count), rowBytes: count * 2)
-        var bufferFloat32 = vImage_Buffer(
-          data: dst, height: 1, width: UInt(count), rowBytes: count * 4)
-        
-        let error = vImageConvert_Planar16FtoPlanarF(
-          &bufferFloat16, &bufferFloat32, 0)
-        if error != kvImageNoError {
-          fatalError(
-            "Encountered error code \(error) while converting F16 to F32.")
-        }
-      }
-      copy(dst: x_f32, src: self.pointer)
-      copy(dst: y_f32, src: other.pointer)
-    } else {
-      memcpy(x_f32, self.pointer, self.allocatedSize)
-      memcpy(y_f32, other.pointer, other.allocatedSize)
-    }
+    copyToFloatArray(dataType: dataType, src: self.pointer, dst: x_f32, count: self.count);
+    copyToFloatArray(dataType: other.dataType, src: other.pointer, dst: y_f32, count: other.count);
+    
     var difference = [Float](repeating: 0, count: count)
     memcpy(&difference, x_f32, count * 4)
     var n_copy = Int32(count)
@@ -166,5 +148,31 @@ extension TensorBuffer {
     
     // Find ||x - y||
     return Float(snrm2_(&n_copy, &difference, &inc))
+  }
+  
+  func copyToFloatArray(dataType: MTLDataType, src: UnsafeMutableRawPointer, dst: UnsafeMutableRawPointer, count: Int) {
+    switch dataType {
+    case .float:
+      memcpy(dst, src, count * dataType.size)
+    case .half, .ushort:
+      halfCopy(dst: dst, src: src, count: count)
+    default:
+      fatalError("Invalid datatype \(dataType). Only f32, f16, and bf16 are supported")
+    }
+  }
+  
+  // Partially sourced from:
+  // https://github.com/hollance/TensorFlow-iOS-Example/blob/master/VoiceMetal/VoiceMetal/Float16.swift
+  func halfCopy(dst: UnsafeMutableRawPointer, src: UnsafeMutableRawPointer, count: Int) {
+    var bufferFloat16 = vImage_Buffer(
+      data: src, height: 1, width: UInt(count), rowBytes: count * 2)
+    var bufferFloat32 = vImage_Buffer(
+      data: dst, height: 1, width: UInt(count), rowBytes: count * 4)
+    
+    let error = vImageConvert_Planar16FtoPlanarF(
+      &bufferFloat16, &bufferFloat32, 0)
+    if error != kvImageNoError {
+      fatalError("Encountered error code \(error) while converting F16 to F32.")
+    }
   }
 }

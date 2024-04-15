@@ -29,10 +29,8 @@ extension UInt32: MTLConvertible {
 // MARK: - TensorElement
 
 // Uses for declaring types of tensors.
-protocol TensorElement: MTLConvertible { }
-
-extension UInt8: TensorElement {
-  static var mtlDataType: MTLDataType { .uchar }
+protocol TensorElement: MTLConvertible {
+    @inlinable static var shortDescription: String { get }
 }
 
 protocol TensorFloatingPoint:
@@ -40,16 +38,32 @@ protocol TensorFloatingPoint:
 
 #if arch(arm64)
 extension Float16: TensorFloatingPoint {
+  @inlinable public static var shortDescription: String {
+    get {
+      return "f16"
+    }
+  }
+    
   static var mtlDataType: MTLDataType { .half }
 }
 #endif
 
 extension Float: TensorFloatingPoint {
+  @inlinable public static var shortDescription: String {
+    get {
+      return "f32"
+    }
+  }
   static var mtlDataType: MTLDataType { .float }
 }
 
 extension BFloat: TensorFloatingPoint {
-    static var mtlDataType: MTLDataType { .ushort }
+  @inlinable public static var shortDescription: String {
+    get {
+      return "bf16"
+    }
+  }
+  static var mtlDataType: MTLDataType { .ushort }
 }
 
 // MARK: - MTLDataType Extensions

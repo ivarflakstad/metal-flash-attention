@@ -322,10 +322,6 @@ class GEMMPerfTests: MFATestCase {
               for config in Config.fastConfigs {
                 let index = size - sizes.lowerBound
                 var gflops = flops[config]![index] / 1e9
-                if config == .mps && Real.self == BFloat.self {
-                  // MPS bfloat is run with f32, so we half the flops.
-                  gflops /= 2.0;
-                }
                 message += " - \(config.name)"
                 message += " \(Int(gflops))"
               }
@@ -398,12 +394,7 @@ class GEMMPerfTests: MFATestCase {
           defer { sizeIndex += 1 }
           if size % (segment.granularity ?? granularity) == 0 {
             sizes.append(size)
-            if config == .mps && Real.self == BFloat.self {
-              // MPS bfloat is run with f32, so we half the flops.
-              speeds.append(flopsArray[sizeIndex] / 2.0)
-            } else {
-              speeds.append(flopsArray[sizeIndex])
-            }
+            speeds.append(flopsArray[sizeIndex])
           }
         }
       }

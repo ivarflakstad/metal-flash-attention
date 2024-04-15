@@ -247,15 +247,15 @@ class GEMMPerfTests: MFATestCase {
               }
             }
             
-//            let params = EuclideanDistanceParameters(
-//              matrixK: K, batchSize: batchSize)
-//            if !C.isApproximatelyEqual(to: mps_C, parameters: params) {
-//              MPL_showComparison(
-//                actual: C, actualName: self.currentConfig!.name,
-//                expected: mps_C, expectedName: "MPS", parameters: params)
-//              let distance = C.euclideanDistance(to: mps_C)
-//              fatalError("Tensors did not match. Euclidean distance: \(distance)")
-//            }
+            let params = EuclideanDistanceParameters(
+              matrixK: K, batchSize: batchSize)
+            if !C.isApproximatelyEqual(to: mps_C, parameters: params) {
+              MPL_showComparison(
+                actual: C, actualName: self.currentConfig!.name,
+                expected: mps_C, expectedName: "MPS", parameters: params)
+              let distance = C.euclideanDistance(to: mps_C)
+              fatalError("Tensors did not match. Euclidean distance: \(distance)")
+            }
             
             mps_A.buffer.release()
             mps_B.buffer.release()
@@ -306,7 +306,7 @@ class GEMMPerfTests: MFATestCase {
                     A_trans: A_trans, B_trans: B_trans, D_trans: D_trans,
                     batchSize: batchSize, useBias: useBias)
               }
-                  cleanup(config: config)
+              cleanup(config: config)
           }
           
           if logProgress {

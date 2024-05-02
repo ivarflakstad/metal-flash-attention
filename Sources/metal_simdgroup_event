@@ -31,8 +31,8 @@ namespace metal
     METAL_FUNC void async_copy(threadgroup T *dst, const device T *src, ulong n_elements) thread {
 #if defined(__HAVE_SIMDGROUP_FUTURE__)
       event = __metal_simdgroup_async_copy_1d(sizeof(T), alignof(T), reinterpret_cast<threadgroup void *>(dst), reinterpret_cast<const device void *>(src), n_elements);
-#else
-      *(reinterpret_cast<threadgroup T*>(dst)) =  *reinterpret_cast<const device T*>(src);
+//#else
+//      *(reinterpret_cast<threadgroup T*>(dst)) =  *reinterpret_cast<const device T*>(src);
 #endif
     }
     
@@ -40,8 +40,8 @@ namespace metal
     METAL_FUNC void async_copy(device T *dst, const threadgroup T *src, ulong n_elements) thread {
 #if defined(__HAVE_SIMDGROUP_FUTURE__)
       event = __metal_simdgroup_async_copy_1d(sizeof(T), alignof(T), reinterpret_cast<device void *>(dst), reinterpret_cast<const threadgroup void *>(src), n_elements);
-#else
-    *(reinterpret_cast<device T*>(dst)) =  *reinterpret_cast<const threadgroup T*>(src);
+//#else
+//    *(reinterpret_cast<device T*>(dst)) =  *reinterpret_cast<const threadgroup T*>(src);
 #endif
     }
     
@@ -53,8 +53,8 @@ namespace metal
         dst_tile_dimensions = dst_tile_dimensions.yx;
       }
       event = __metal_simdgroup_async_copy_2d(sizeof(T), alignof(T), reinterpret_cast<threadgroup void *>(dst), ushort(dst_elements_per_row), 1, ulong2(dst_tile_dimensions), reinterpret_cast<const device void *>(src), uint(src_elements_per_row), 1, ulong2(src_tile_dimensions), long2(0), static_cast<int>(clamp_mode));
-#else
-      *(reinterpret_cast<threadgroup T *>(dst)) = *reinterpret_cast<const device T *>(src);
+//#else
+//      *(reinterpret_cast<threadgroup T *>(dst)) = *reinterpret_cast<const device T *>(src);
 #endif
     }
     
@@ -66,8 +66,8 @@ namespace metal
       }
 #if defined(__HAVE_SIMDGROUP_FUTURE__)
       event = __metal_simdgroup_async_copy_2d(sizeof(T), alignof(T), reinterpret_cast<device void *>(dst), uint(dst_elements_per_row), 1, ulong2(dst_tile_dimensions), reinterpret_cast<const threadgroup void *>(src), ushort(src_elements_per_row), 1, ulong2(src_tile_dimensions), long2(0), 0);
-#else
-        *(reinterpret_cast<device T *>(dst)) = *reinterpret_cast<const threadgroup T *>(src);
+//#else
+//        *(reinterpret_cast<device T *>(dst)) = *reinterpret_cast<const threadgroup T *>(src);
 #endif
     }
     

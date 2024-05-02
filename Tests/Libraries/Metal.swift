@@ -19,14 +19,18 @@ struct MetalContext {
   var commandQueue: MTLCommandQueue
   
   init() {
+    #if os(iOS)
+    self.device = MTLCreateSystemDefaultDevice()!
+    #else
     self.device = MTLCopyAllDevices().first!
-    device.shouldMaximizeConcurrentCompilation = true
+    self.device.shouldMaximizeConcurrentCompilation = true;
+    #endif
     self.infoDevice = try! GPUInfoDevice()
     self.graphDevice = MPSGraphDevice(mtlDevice: device)
     
-    var libraryURL = Bundle.main.resourceURL!
-    libraryURL.append(component: "lib")
-    libraryURL.append(component: "libMetalFlashAttention.metallib")
+    let metalBundleURL = Bundle.main.resourceURL!.appendingPathComponent("MetalFlashAttention_MetalFlashAttentionTests.bundle")
+    let bundle = Bundle(url: metalBundleURL)!
+    let libraryURL = bundle.url(forResource: "libMetalFlashAttention", withExtension: "metallib")!
     self.library = try! device.makeLibrary(URL: libraryURL)
     self.commandQueue = device.makeCommandQueue()!
   }

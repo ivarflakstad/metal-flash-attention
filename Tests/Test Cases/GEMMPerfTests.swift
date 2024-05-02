@@ -321,7 +321,7 @@ class GEMMPerfTests: MFATestCase {
               }
               for config in Config.fastConfigs {
                 let index = size - sizes.lowerBound
-                var gflops = flops[config]![index] / 1e9
+                let gflops = flops[config]![index] / 1e9
                 message += " - \(config.name)"
                 message += " \(Int(gflops))"
               }

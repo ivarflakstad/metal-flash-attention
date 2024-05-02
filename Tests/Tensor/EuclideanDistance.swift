@@ -109,7 +109,7 @@ extension Tensor {
     
     let distance = euclideanDistance(to: other)
     if distance.isNaN {
-      return true //fatalError("Distance is NaN")
+      fatalError("Distance is NaN")
     } else {
       return euclideanDistance(to: other) < Float.infinity
     }

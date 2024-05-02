@@ -220,9 +220,13 @@ METAL_FUNC void async_access_accumulator(threadgroup T *C_block, device T *C,
   simdgroup_event event;
   if (is_store) {
     event.async_copy(C_src, N, C_tile, C_block, N_group, C_tile);
-  } else {
-    event.async_copy(C_block, N_group, C_tile, C_src, N, C_tile);
     simdgroup_event::wait(1, &event);
+//    *(reinterpret_cast<device vec<T, 2>*>(C_src)) = *reinterpret_cast<threadgroup vec<T, 2>*>(C_block);
+  } else {
+//    event.async_copy(C_block, N_group, C_tile, C_src, N, C_tile);
+//    simdgroup_event::wait(1, &event);
+
+    *(reinterpret_cast<threadgroup vec<T, 2>*>(C_block)) = *reinterpret_cast<device vec<T, 2>*>(C_src);
   }
 }
 
@@ -276,7 +280,8 @@ void _gemm_impl(device T *A [[buffer(0)]],
 {
   if (batched) {
     // TODO: Re-compute every inner loop iteration for FP64 accumulate.
-    ulong3 offsets = matrix_offsets[0].xyz * gid.z;
+    //ulong3 offsets = matrix_offsets[0].xyz * gid.z;
+    ulong3 offsets = matrix_offsets[gid.z].xyz;
     A = (device T*)((device uchar*)A + offsets[0]);
     B = (device T*)((device uchar*)B + offsets[1]);
     C = (device T*)((device uchar*)C + offsets[2]);
@@ -423,7 +428,7 @@ void _gemm_impl(device T *A [[buffer(0)]],
     
     auto C_block = simdgroup_matrix_storage<T>::apply_offset(threadgroup_block, N_group, C_block_offset);
     partial_accumulate(sram, C_block, false);
-    threadgroup_barrier(mem_flags::mem_threadgroup);
+    simdgroup_barrier(mem_flags::mem_threadgroup);
   }
   
   if (use_activation_function) {

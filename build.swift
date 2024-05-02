@@ -500,6 +500,17 @@ if skipCompilation {
     startTime: compileMetallibStart,
     prefix: "Compiled the metallib in: ",
     suffix: "")
+  
+  // Copy metallib to Tests/ folder for swift package. It is ignored by git.
+  func copyToTests() {
+    let cpDestination = "Tests/\(metallibName)"
+    let process = try! Process.run(
+      URL(fileURLWithPath: "/bin/cp"),
+      arguments: [libDir.appending(component: metallibName).path, cpDestination])
+    process.waitUntilExit()
+  }
+  copyToTests()
+  print("Metallib ready to be packaged")
 }
 
 // MARK: - Clean Up

@@ -7,6 +7,7 @@
 
 import Metal
 import QuartzCore
+import BFloat16
 
 public class GEMMPerfTests<T: TensorElement> {
   public init() {}
@@ -62,8 +63,6 @@ public class GEMMPerfTests<T: TensorElement> {
           granularity: 256, trialsExtension: trialsExtension),
       ]
     }
-    
-    segments = [Segment<T>(sizes: 1..<64, iterations: 256)];
     
     for i in 0..<segments.count {
       segments[i].profile(
@@ -137,7 +136,7 @@ public class GEMMPerfTests<T: TensorElement> {
     //#endif
     //    if T.self == Float.self {
     //      plt.title("Float32 Utilization (\(configRepr))\(debugWarning)")
-    //    } else if T.self == BFloat.self {
+    //    } else if T.self == BFloat16.self {
     //      plt.title("BFloat16 Utilization (\(configRepr))\(debugWarning)")
     //    } else {
     //      plt.title("Float16 Utilization (\(configRepr))\(debugWarning)")
@@ -266,8 +265,8 @@ struct Segment<T: TensorElement> {
   ) {
     func innerLoop(size: Int, reportResults: Bool) {
       typealias Inner = T;
-      // MPS GEMM does not (currently) support BFloat
-      if currentConfig == .mps && T.self == BFloat.self {
+      // MPS GEMM does not (currently) support BFloat16
+      if currentConfig == .mps && T.self == BFloat16.self {
         typealias Inner = Float;
       }
 

@@ -8,6 +8,7 @@
 import SwiftUI
 import Charts
 import MFALib
+import BFloat16
 
 enum Operation: String, CaseIterable, Identifiable {
   var id: Self {
@@ -75,15 +76,13 @@ struct OpDetail: View {
   @State private var series: [Series] = []
   @State var rawSelected: Int? = nil
   
-  var selected: [Series]? {
-      if let rawSelected {
-        return series
-      }
-      return nil
-  }
-  
+//  var selected: [Series]? {
+//    if let rawSelected {
+//      return series
+//    }
+//    return nil
+//  }
   var body: some View {
-    
     switch state {
     case .idle:
       NavigationView {
@@ -105,8 +104,9 @@ struct OpDetail: View {
     case .running:
       ProgressView()
     case .done:
+//      ProgressView()
       Chart(series) { series in
-        ForEach(series.extracts, id: \.name) { element in
+        ForEach(series.results, id: \.name) { element in
           LineMark(
             x: .value("Date", element.size),
             y: .value("Sales", element.gflops)
@@ -119,7 +119,7 @@ struct OpDetail: View {
         .lineStyle(StrokeStyle(lineWidth: lineWidth))
         .symbolSize(symbolSize)
       }
-      .chartScrollableAxes([.horizontal, .vertical])
+      //.chartScrollableAxes([.horizontal, .vertical])
       .chartForegroundStyleScale { colorMap[$0]! }
       .chartSymbolScale([
         "MFA 32x32": Circle().strokeBorder(lineWidth: 2),
@@ -129,51 +129,6 @@ struct OpDetail: View {
       .chartXAxis(.automatic)
       .chartYAxis(.automatic)
       .chartLegend(.automatic)
-    }
-  }
-  @ViewBuilder
-  var valueSelectionPopover: some View {
-    if let selectedDate,
-       let salesPerCity = salesPerCity(on: selectedDate) {
-      VStack(alignment: .leading) {
-        Text("Average on \(selectedDate, format: .dateTime.weekday(.wide))s")
-          .font(preTitleFont)
-          .foregroundStyle(.secondary)
-          .fixedSize()
-        HStack(spacing: 20) {
-          ForEach(salesPerCity) { salesInfo in
-            VStack(alignment: .leading, spacing: 1) {
-              HStack(alignment: .lastTextBaseline, spacing: 4) {
-                Text("\(salesInfo.count, format: .number)")
-                  .font(titleFont)
-                  .foregroundColor(colorPerCity[salesInfo.city])
-                  .blendMode(colorScheme == .light ? .plusDarker : .normal)
-                
-                Text("sales")
-                  .font(preTitleFont)
-                  .foregroundStyle(.secondary)
-              }
-              HStack(spacing: 6) {
-                if salesInfo.city == "San Francisco" {
-                  legendCircle
-                } else {
-                  legendSquare
-                }
-                Text("\(salesInfo.city)")
-                  .font(labelFont)
-                  .foregroundStyle(.secondary)
-              }
-            }
-          }
-        }
-      }
-      .padding(6)
-      .background {
-        RoundedRectangle(cornerRadius: 4)
-          .foregroundStyle(Color.gray.opacity(0.12))
-      }
-    } else {
-      EmptyView()
     }
   }
 }
@@ -217,13 +172,13 @@ func run(op: Operation, dtype: Datatype) -> [Series] {
 func processBenchResults(results: [String : [Extraction]]) -> [Series] {
   results.flatMap { name, extractions in
     extractions.compactMap { extraction in
-      var extracts: [(Int, Double, String)] = []
+      var extracts: [Result] = []
       zip(extraction.sizeArray, extraction.gflopsArray).forEach { (s, g) in
-        extracts.append((s, g, extraction.title))
+        extracts.append( Result(name:extraction.title, size:s, gflops:g) )
       }
       return Series(
         name: name,
-        extracts: extracts
+        results: extracts
       );
     }
   }
@@ -238,7 +193,7 @@ func runBench(op: Operation, dtype: Datatype) throws -> [String : [Extraction]] 
     case .f16:
       TestCaseRunner.runTests(testCases: [AttentionPerfTests<Float16>()], speed: TestSpeed.veryLong)
     case .bf16:
-      TestCaseRunner.runTests(testCases: [AttentionPerfTests<BFloat>()], speed: TestSpeed.veryLong)
+      TestCaseRunner.runTests(testCases: [AttentionPerfTests<BFloat16>()], speed: TestSpeed.veryLong)
     }
   case .gemm:
     switch dtype {
@@ -247,7 +202,7 @@ func runBench(op: Operation, dtype: Datatype) throws -> [String : [Extraction]] 
     case .f16:
       TestCaseRunner.runTests(testCases: [GEMMPerfTests<Float16>()], speed: TestSpeed.veryLong)
     case .bf16:
-      TestCaseRunner.runTests(testCases: [GEMMPerfTests<BFloat>()], speed: TestSpeed.veryLong)
+      TestCaseRunner.runTests(testCases: [GEMMPerfTests<BFloat16>()], speed: TestSpeed.veryLong)
     }
   case .correctness:
     [:]

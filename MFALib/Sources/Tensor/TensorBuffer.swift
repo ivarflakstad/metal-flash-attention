@@ -28,20 +28,4 @@ extension TensorBuffer {
   var allocatedSize: Int {
     self.count * dataType.size
   }
-  
-  // The conversion process makes multiple copies, but at least it's safe.
-//  func numpy() -> PythonObject {
-//    let ctx = PythonContext.global
-//    let data = Data(bytes: pointer, count: allocatedSize)
-//    let bytes = PythonBytes(data)
-//    let raw = ctx.np.frombuffer(bytes, dtype: dataType.numpy)
-//    return ctx.np.reshape(raw, self.shape)
-//  }
 }
-
-//extension Tensor {
-//  func numpy() -> PythonObject {
-//    buffer.numpy()
-//  }
-//}
-

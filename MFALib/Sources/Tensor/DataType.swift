@@ -7,6 +7,7 @@
 
 import Metal
 import MetalPerformanceShadersGraph
+import BFloat16
 
 // Used for setting function constants.
 public protocol MTLConvertible {
@@ -56,7 +57,7 @@ extension Float: TensorFloatingPoint {
   public static var mtlDataType: MTLDataType { .float }
 }
 
-extension BFloat: TensorFloatingPoint {
+extension BFloat16: TensorFloatingPoint {
   @inlinable public static var shortDescription: String {
     get {
       return "bf16"
@@ -80,16 +81,6 @@ extension MTLDataType {
     default: unrecognizedError()
     }
   }
-  
-//  var numpy: PythonObject {
-//    let ctx = PythonContext.global
-//    switch self {
-//    case .half: return ctx.np.float16
-//    case .ushort: return ctx.np.float16
-//    case .float: return ctx.np.float32
-//    default: unrecognizedError()
-//    }
-//  }
   
   var size: Int {
     switch self {

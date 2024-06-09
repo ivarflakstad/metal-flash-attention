@@ -18,9 +18,9 @@ let package = Package(
     .executableTarget(
       name: "MFApp",
       dependencies: [
-        "MetalFlashAttention",
-        .product(name: "AppleGPUInfo", package: "AppleGPUInfo")
-      ]
+        "MetalFlashAttention"
+      ],
+      resources: [.process("Resources")]
     )
   ]
 )

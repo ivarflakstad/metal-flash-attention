@@ -14,10 +14,7 @@
 		9835F4672A4B35FF0095D0D0 /* AppleGPUInfo in Frameworks */ = {isa = PBXBuildFile; productRef = 9835F4662A4B35FF0095D0D0 /* AppleGPUInfo */; settings = {ATTRIBUTES = (Required, ); }; };
 		9835F4692A4B36DB0095D0D0 /* MetalFlashAttention.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9835F4682A4B36DB0095D0D0 /* MetalFlashAttention.swift */; };
 		9835F46B2A4B36E70095D0D0 /* MetalPerformanceShadersGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9835F46A2A4B36E70095D0D0 /* MetalPerformanceShadersGraph.swift */; };
-		9835F46D2A4B36F60095D0D0 /* Python.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9835F46C2A4B36F60095D0D0 /* Python.swift */; };
-		9835F46F2A4B37110095D0D0 /* Matplotlib.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9835F46E2A4B37110095D0D0 /* Matplotlib.swift */; };
 		9835F4712A4B39290095D0D0 /* Metal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9835F4702A4B39290095D0D0 /* Metal.swift */; };
-		9835F4732A4B39C80095D0D0 /* NumPy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9835F4722A4B39C80095D0D0 /* NumPy.swift */; };
 		9835F47B2A4B4F3C0095D0D0 /* libMetalFlashAttention.metallib in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9835F47A2A4B4F300095D0D0 /* libMetalFlashAttention.metallib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		9835F47D2A4B53F40095D0D0 /* Operation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9835F47C2A4B53F40095D0D0 /* Operation.swift */; };
 		9835F47F2A4B55580095D0D0 /* TensorBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9835F47E2A4B55580095D0D0 /* TensorBuffer.swift */; };
@@ -34,10 +31,11 @@
 		98C7952C2A4C714400DB688D /* Random.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98C7952B2A4C714400DB688D /* Random.swift */; };
 		98C795302A4C71A400DB688D /* Atomics in Frameworks */ = {isa = PBXBuildFile; productRef = 98C7952F2A4C71A400DB688D /* Atomics */; };
 		98F2F5DD2A60978C006216F4 /* GEMMTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F2F5DC2A60978C006216F4 /* GEMMTest.swift */; };
+		C5204FB62C15D950008125D4 /* BFloat16 in Frameworks */ = {isa = PBXBuildFile; productRef = C5204FB52C15D950008125D4 /* BFloat16 */; };
+		C5204FB82C15D96A008125D4 /* BFloat16 in Frameworks */ = {isa = PBXBuildFile; productRef = C5204FB72C15D96A008125D4 /* BFloat16 */; };
 		C5371A322BFD009500F5DE8F /* MFALib in Frameworks */ = {isa = PBXBuildFile; productRef = C5371A312BFD009500F5DE8F /* MFALib */; };
 		C5371A342BFD009C00F5DE8F /* MFALib in Frameworks */ = {isa = PBXBuildFile; productRef = C5371A332BFD009C00F5DE8F /* MFALib */; };
 		C5371A6F2BFDC47C00F5DE8F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C5371A6E2BFDC47C00F5DE8F /* Assets.xcassets */; };
-		C56A848F2B87F30200B72BAE /* Bfloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = C56A848E2B87F30200B72BAE /* Bfloat.swift */; };
 		C5767D0D2BE39F0300403281 /* MFApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5767D0C2BE39F0300403281 /* MFApp.swift */; };
 		C5767D142BE39F0400403281 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C5767D132BE39F0400403281 /* Preview Assets.xcassets */; };
 		C5BE0C352BFDECB300920F84 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5BE0C342BFDECB300920F84 /* ContentView.swift */; };
@@ -72,10 +70,7 @@
 		9835F4642A4B15300095D0D0 /* MetalFlashAttention.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MetalFlashAttention.entitlements; sourceTree = "<group>"; };
 		9835F4682A4B36DB0095D0D0 /* MetalFlashAttention.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalFlashAttention.swift; sourceTree = "<group>"; };
 		9835F46A2A4B36E70095D0D0 /* MetalPerformanceShadersGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalPerformanceShadersGraph.swift; sourceTree = "<group>"; };
-		9835F46C2A4B36F60095D0D0 /* Python.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Python.swift; sourceTree = "<group>"; };
-		9835F46E2A4B37110095D0D0 /* Matplotlib.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matplotlib.swift; sourceTree = "<group>"; };
 		9835F4702A4B39290095D0D0 /* Metal.swift */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = Metal.swift; sourceTree = "<group>"; tabWidth = 2; };
-		9835F4722A4B39C80095D0D0 /* NumPy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumPy.swift; sourceTree = "<group>"; };
 		9835F4742A4B4B550095D0D0 /* metal_data_type */ = {isa = PBXFileReference; explicitFileType = sourcecode.metal; path = metal_data_type; sourceTree = "<group>"; };
 		9835F47A2A4B4F300095D0D0 /* libMetalFlashAttention.metallib */ = {isa = PBXFileReference; explicitFileType = sourcecode.asm.llvm; name = libMetalFlashAttention.metallib; path = lib/libMetalFlashAttention.metallib; sourceTree = "<group>"; };
 		9835F47C2A4B53F40095D0D0 /* Operation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Operation.swift; sourceTree = "<group>"; };
@@ -124,7 +119,6 @@
 		C5371A362BFD679600F5DE8F /* MFApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MFApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C5371A372BFD689900F5DE8F /* MetalFlashAttention */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MetalFlashAttention; sourceTree = BUILT_PRODUCTS_DIR; };
 		C5371A6E2BFDC47C00F5DE8F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		C56A848E2B87F30200B72BAE /* Bfloat.swift */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = Bfloat.swift; sourceTree = "<group>"; tabWidth = 2; };
 		C5767D0C2BE39F0300403281 /* MFApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MFApp.swift; sourceTree = "<group>"; };
 		C5767D132BE39F0400403281 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C5B6D7092BDE7C7B0086C5B8 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
@@ -143,6 +137,7 @@
 				C5371A322BFD009500F5DE8F /* MFALib in Frameworks */,
 				98C795302A4C71A400DB688D /* Atomics in Frameworks */,
 				9835F4672A4B35FF0095D0D0 /* AppleGPUInfo in Frameworks */,
+				C5204FB82C15D96A008125D4 /* BFloat16 in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -153,6 +148,7 @@
 				C5371A342BFD009C00F5DE8F /* MFALib in Frameworks */,
 				C5F8A99C2BFBECFE0007A337 /* AppleGPUInfo in Frameworks */,
 				C5F8A99E2BFBED020007A337 /* Atomics in Frameworks */,
+				C5204FB62C15D950008125D4 /* BFloat16 in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -190,12 +186,9 @@
 		9835F4802A4B555B0095D0D0 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				9835F46E2A4B37110095D0D0 /* Matplotlib.swift */,
 				9835F4702A4B39290095D0D0 /* Metal.swift */,
 				9835F4682A4B36DB0095D0D0 /* MetalFlashAttention.swift */,
 				9835F46A2A4B36E70095D0D0 /* MetalPerformanceShadersGraph.swift */,
-				9835F4722A4B39C80095D0D0 /* NumPy.swift */,
-				9835F46C2A4B36F60095D0D0 /* Python.swift */,
 			);
 			path = Libraries;
 			sourceTree = "<group>";
@@ -271,7 +264,6 @@
 				98C795172A4B730E00DB688D /* Tensor.swift */,
 				98C7951C2A4B8AFF00DB688D /* TensorBackend.swift */,
 				9835F47E2A4B55580095D0D0 /* TensorBuffer.swift */,
-				C56A848E2B87F30200B72BAE /* Bfloat.swift */,
 			);
 			path = Tensor;
 			sourceTree = "<group>";
@@ -401,6 +393,7 @@
 				9835F4662A4B35FF0095D0D0 /* AppleGPUInfo */,
 				98C7952F2A4C71A400DB688D /* Atomics */,
 				C5371A312BFD009500F5DE8F /* MFALib */,
+				C5204FB72C15D96A008125D4 /* BFloat16 */,
 			);
 			productName = MetalFlashAttention;
 			productReference = C5371A372BFD689900F5DE8F /* MetalFlashAttention */;
@@ -423,6 +416,7 @@
 				C5F8A99B2BFBECFE0007A337 /* AppleGPUInfo */,
 				C5F8A99D2BFBED020007A337 /* Atomics */,
 				C5371A332BFD009C00F5DE8F /* MFALib */,
+				C5204FB52C15D950008125D4 /* BFloat16 */,
 			);
 			productName = MFA;
 			productReference = C5371A362BFD679600F5DE8F /* MFApp.app */;
@@ -460,6 +454,7 @@
 				9835F4652A4B35FF0095D0D0 /* XCRemoteSwiftPackageReference "applegpuinfo" */,
 				98C7952E2A4C71A400DB688D /* XCRemoteSwiftPackageReference "swift-atomics" */,
 				C5371A302BFD008D00F5DE8F /* XCLocalSwiftPackageReference "MFALib" */,
+				C5204FB42C15D947008125D4 /* XCRemoteSwiftPackageReference "BFloat16" */,
 			);
 			productRefGroup = 987E35D22A45E4F400ACACE3;
 			projectDirPath = "";
@@ -518,11 +513,9 @@
 				98C795182A4B730E00DB688D /* Tensor.swift in Sources */,
 				98C7951D2A4B8AFF00DB688D /* TensorBackend.swift in Sources */,
 				9835F4822A4B58530095D0D0 /* DataType.swift in Sources */,
-				C56A848F2B87F30200B72BAE /* Bfloat.swift in Sources */,
 				9835F47D2A4B53F40095D0D0 /* Operation.swift in Sources */,
 				980EDCFD2A4E10A100BC9BF0 /* CorrectnessTests.swift in Sources */,
 				9835F45A2A4A3BA40095D0D0 /* Attention.metal in Sources */,
-				9835F4732A4B39C80095D0D0 /* NumPy.swift in Sources */,
 				98C795202A4B8D0900DB688D /* GEMM.swift in Sources */,
 				9835F45C2A4A3BAD0095D0D0 /* Convolution.metal in Sources */,
 				98F2F5DD2A60978C006216F4 /* GEMMTest.swift in Sources */,
@@ -534,7 +527,6 @@
 				9835F47F2A4B55580095D0D0 /* TensorBuffer.swift in Sources */,
 				984279D72A619008001BBD55 /* AttentionTest.swift in Sources */,
 				9835F4692A4B36DB0095D0D0 /* MetalFlashAttention.swift in Sources */,
-				9835F46F2A4B37110095D0D0 /* Matplotlib.swift in Sources */,
 				980070F62A66E4490097D21F /* AttentionPerfTests.swift in Sources */,
 				98C7952A2A4B962B00DB688D /* MFATestCase.swift in Sources */,
 				C5F8A9632BFB74760007A337 /* TestCaseRunner.swift in Sources */,
@@ -542,7 +534,6 @@
 				98C7952C2A4C714400DB688D /* Random.swift in Sources */,
 				98C795222A4B8D0E00DB688D /* Attention.swift in Sources */,
 				C5F8A9682BFBBD1C0007A337 /* GEMMSquareBenchmark.swift in Sources */,
-				9835F46D2A4B36F60095D0D0 /* Python.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -880,6 +871,14 @@
 				minimumVersion = 1.1.0;
 			};
 		};
+		C5204FB42C15D947008125D4 /* XCRemoteSwiftPackageReference "BFloat16" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ivarflakstad/BFloat16.swift";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -892,6 +891,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 98C7952E2A4C71A400DB688D /* XCRemoteSwiftPackageReference "swift-atomics" */;
 			productName = Atomics;
+		};
+		C5204FB52C15D950008125D4 /* BFloat16 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C5204FB42C15D947008125D4 /* XCRemoteSwiftPackageReference "BFloat16" */;
+			productName = BFloat16;
+		};
+		C5204FB72C15D96A008125D4 /* BFloat16 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C5204FB42C15D947008125D4 /* XCRemoteSwiftPackageReference "BFloat16" */;
+			productName = BFloat16;
 		};
 		C5371A312BFD009500F5DE8F /* MFALib */ = {
 			isa = XCSwiftPackageProductDependency;

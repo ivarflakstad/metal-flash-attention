@@ -7,6 +7,7 @@
 
 import Accelerate
 import Metal
+import BFloat16
 
 struct EuclideanDistanceParameters {
   // `averageMagnitude` should be 1.0 for uniformly distributed random numbers.
@@ -73,7 +74,7 @@ extension Tensor {
         }
       }
     case .ushort:
-      let ptr = buffer.pointer.assumingMemoryBound(to: BFloat.self)
+      let ptr = buffer.pointer.assumingMemoryBound(to: BFloat16.self)
       for i in 0..<elements {
         if ptr[i].isNaN {
           return true

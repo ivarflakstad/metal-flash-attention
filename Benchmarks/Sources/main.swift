@@ -6,6 +6,7 @@
 //
 import MFALib
 import ArgumentParser
+import BFloat16
 
 
 enum Operation: String, ExpressibleByArgument, CaseIterable {
@@ -33,7 +34,7 @@ struct BenchCLI: ParsableCommand {
       case .f16:
           TestCaseRunner.runTests(testCases: [AttentionPerfTests<Float16>()], speed: TestSpeed.veryLong)
       case .bf16:
-          TestCaseRunner.runTests(testCases: [AttentionPerfTests<BFloat>()], speed: TestSpeed.veryLong)
+          TestCaseRunner.runTests(testCases: [AttentionPerfTests<BFloat16>()], speed: TestSpeed.veryLong)
       }
     case .gemm:
       switch datatype {
@@ -42,7 +43,7 @@ struct BenchCLI: ParsableCommand {
       case .f16:
           TestCaseRunner.runTests(testCases: [GEMMPerfTests<Float16>()], speed: TestSpeed.veryLong)
       case .bf16:
-          TestCaseRunner.runTests(testCases: [GEMMPerfTests<BFloat>()], speed: TestSpeed.veryLong)
+          TestCaseRunner.runTests(testCases: [GEMMPerfTests<BFloat16>()], speed: TestSpeed.veryLong)
       }
     }
   }

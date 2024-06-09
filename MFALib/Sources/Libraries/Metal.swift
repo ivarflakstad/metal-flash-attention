@@ -28,16 +28,12 @@ struct MetalContext {
     self.infoDevice = try! GPUInfoDevice()
     self.graphDevice = MPSGraphDevice(mtlDevice: device)
     
+    var libraryURL = Bundle.main.resourceURL!
+    libraryURL.append(components: "MFALib_MFALib", "Contents", "Resources")
     #if os(iOS)
-    let libraryURL = Bundle.module.url(
-      forResource: "libMetalFlashAttention-ios",
-      withExtension: "metallib"
-    )!
+    libraryURL.append(component: "libMetalFlashAttention-ios.metallib")
     #else
-    let libraryURL = Bundle.module.url(
-      forResource: "libMetalFlashAttention-macos",
-      withExtension: "metallib"
-    )!
+    libraryURL.append(component: "libMetalFlashAttention-macos.metallib")
     #endif
     self.library = try! device.makeLibrary(URL: libraryURL)
     self.commandQueue = device.makeCommandQueue()!

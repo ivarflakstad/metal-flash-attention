@@ -18,8 +18,9 @@ let package = Package(
     .library(name: "MFALib", targets: ["MFALib"])
   ],
   dependencies: [
-    .package(url: "https://github.com/philipturner/applegpuinfo.git", branch: "main"),
+    .package(url: "https://github.com/philipturner/applegpuinfo", branch: "main"),
     .package(url: "https://github.com/apple/swift-atomics.git", branch: "main"),
+    .package(url: "https://github.com/ivarflakstad/BFloat16.swift.git", branch: "main"),
 //    .package(url: "https://github.com/devicekit/DeviceKit", branch: "master"),
   ],
   targets: [
@@ -28,6 +29,7 @@ let package = Package(
       dependencies: [
         .product(name: "AppleGPUInfo", package: "AppleGPUInfo"),
         .product(name: "Atomics", package: "swift-atomics"),
+        .product(name: "BFloat16", package: "BFloat16.swift"),
       ],
       resources: [.process("Resources")]
     )

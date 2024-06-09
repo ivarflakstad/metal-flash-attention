@@ -268,7 +268,7 @@ func touchDirectory(url: URL) {
 let workDir = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
 assertDirectoryExists(url: workDir)
 
-let sourcesDir = workDir.appending(component: "Sources")
+let sourcesDir = workDir.appending(component: "Metal")
 assertDirectoryExists(url: sourcesDir)
 
 let buildDir = workDir.appending(component: "build")
@@ -501,15 +501,14 @@ if skipCompilation {
     prefix: "Compiled the metallib in: ",
     suffix: "")
   
-  // Copy metallib to Tests/ folder for swift package. It is ignored by git.
-  func copyToTests() {
-    let cpDestination = "Tests/\(metallibName)"
+  // Copy metallib to Sources/ folder for swift package. It is ignored by git.
+  func copyForBundle(path: String) {
     let process = try! Process.run(
       URL(fileURLWithPath: "/bin/cp"),
-      arguments: [libDir.appending(component: metallibName).path, cpDestination])
+      arguments: [libDir.appending(component: metallibName).path, path])
     process.waitUntilExit()
   }
-  copyToTests()
+  copyForBundle(path: "MFALib/Sources/Resources/\(metallibName)")
   print("Metallib ready to be packaged")
 }
 

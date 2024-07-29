@@ -498,8 +498,9 @@ kernel void sgemm(device float *A [[buffer(0)]],
   _gemm_impl<float>(A, B, C, D, threadgroup_block, matrix_offsets, table, activation_function_offsets, gid, sidx, lane_id);
 }
 
-#if __METAL_VERSION__ >= 310
-kernel void bgemm(device bfloat *A [[buffer(0)]],
+#if defined(__HAVE_BFLOAT__)
+kernel void bgemm(
+  device bfloat *A [[buffer(0)]],
   device bfloat *B [[buffer(1)]],
   device bfloat *C [[buffer(2)]],
   device void *D [[buffer(3), function_constant(use_activation)]],

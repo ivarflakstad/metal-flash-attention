@@ -102,7 +102,7 @@ struct BuildSettings {
   var externalMetallibPath: String? = nil
   var platform: Platform? = nil
   var verbose: Bool = false
-  var xcodePath: String = "/Applications/Xcode 14.2.app"
+  var xcodePath: String = "/Applications/Xcode.app"
   
   enum Platform {
     case iOS

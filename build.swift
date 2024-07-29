@@ -122,7 +122,7 @@ struct BuildSettings {
       case .iOS:
         return "-mios-version-min=16.0.0"
       case .macOS:
-        return "-mmacosx-version-min=13.0.0"
+        return "-mmacosx-version-min=14.0.0"
       }
     }
     

@@ -256,7 +256,7 @@ void _gemm_impl(device T *A [[buffer(0)]],
                 device void *D [[buffer(3), function_constant(use_activation)]],
                 
                 threadgroup T *threadgroup_block [[threadgroup(0)]],
-                constant ulong4 *matrix_offsets [[buffer(10), function_constant(batched)]],
+                device ulong4 *matrix_offsets [[buffer(10), function_constant(batched)]],
                 typename activation_functor<T>::function_table table [[buffer(11), function_constant(use_activation_function)]],
                 constant uint *activation_function_offsets [[buffer(12), function_constant(batched_activation_function)]],
                 
@@ -470,7 +470,7 @@ kernel void hgemm(device half *A [[buffer(0)]],
                   device void *D [[buffer(3), function_constant(use_activation)]],
                   
                   threadgroup half *threadgroup_block [[threadgroup(0)]],
-                  constant ulong4 *matrix_offsets [[buffer(10), function_constant(batched)]],
+                  device ulong4 *matrix_offsets [[buffer(10), function_constant(batched)]],
                   typename activation_functor<half>::function_table table [[buffer(11), function_constant(use_activation_function)]],
                   constant uint *activation_function_offsets [[buffer(12), function_constant(batched_activation_function)]],
                   
@@ -487,7 +487,7 @@ kernel void sgemm(device float *A [[buffer(0)]],
                   device void *D [[buffer(3), function_constant(use_activation)]],
                   
                   threadgroup float *threadgroup_block [[threadgroup(0)]],
-                  constant ulong4 *matrix_offsets [[buffer(10), function_constant(batched)]],
+                  device ulong4 *matrix_offsets [[buffer(10), function_constant(batched)]],
                   typename activation_functor<float>::function_table table [[buffer(11), function_constant(use_activation_function)]],
                   constant uint *activation_function_offsets [[buffer(12), function_constant(batched_activation_function)]],
                   
@@ -506,7 +506,7 @@ kernel void bgemm(
   device void *D [[buffer(3), function_constant(use_activation)]],
 
   threadgroup bfloat *threadgroup_block [[threadgroup(0)]],
-  constant ulong4 *matrix_offsets [[buffer(10), function_constant(batched)]],
+  device ulong4 *matrix_offsets [[buffer(10), function_constant(batched)]],
   typename activation_functor<bfloat>::function_table table [[buffer(11), function_constant(use_activation_function)]],
   constant uint *activation_function_offsets [[buffer(12), function_constant(batched_activation_function)]],
 
